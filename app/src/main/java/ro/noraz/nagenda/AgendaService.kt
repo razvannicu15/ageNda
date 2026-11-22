@@ -15,6 +15,7 @@ class AgendaService : RemoteViewsService() {
     private class Factory(private val c: Context) : RemoteViewsFactory {
         private var rows: List<Row> = emptyList()
         private var pal: Palette = Palettes.of(c)
+        private var f = 1f
 
         override fun onCreate() {}
 
@@ -23,6 +24,7 @@ class AgendaService : RemoteViewsService() {
             try {
                 rows = Agenda.rows(c)
                 pal = Palettes.of(c)
+                f = Prefs.textScale(c)
             } finally {
                 Binder.restoreCallingIdentity(token)
             }
@@ -46,6 +48,10 @@ class AgendaService : RemoteViewsService() {
                 rv.setInt(R.id.line, "setImageAlpha", pal.lineAlpha)
             }
 
+            val dip = android.util.TypedValue.COMPLEX_UNIT_DIP
+            rv.setTextViewTextSize(R.id.date, dip, 12.5f * f)
+            rv.setTextViewTextSize(R.id.title, dip, 17f * f)
+            rv.setTextViewTextSize(R.id.sub, dip, 13.5f * f)
             rv.setTextViewText(R.id.date, r.date)
             rv.setTextColor(R.id.date, if (r.today) pal.accent else pal.muted)
             rv.setTextViewText(R.id.title, e.title)

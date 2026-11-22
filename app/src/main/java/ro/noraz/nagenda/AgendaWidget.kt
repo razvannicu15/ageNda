@@ -126,7 +126,12 @@ open class AgendaWidget : AppWidgetProvider() {
 
         }
 
+        /** Base sizes (dp) of the clock/weather texts; scaled by the "text size" setting. */
+        val CLOCK_SIZES = mapOf(R.id.clock_time to 64f, R.id.clock_date to 16f, R.id.wx_temp to 36f, R.id.wx_cond to 15f, R.id.wx_hilo to 14f)
+
         private fun renderClock(c: Context, rv: RemoteViews) {
+            val f = Prefs.textScale(c)
+            CLOCK_SIZES.forEach { (id, sz) -> rv.setTextViewTextSize(id, android.util.TypedValue.COMPLEX_UNIT_DIP, sz * f) }
             val lc = Loc.ctx(c)
             val w = Weather.cached(c)
             val unit = "°"

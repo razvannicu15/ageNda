@@ -121,4 +121,7 @@
     <string name="wx_light_rain">Ploaie slabă</string>
     <string name="wx_heavy_rain">Ploaie torențială</string>
     <string name="wx_sleet">Lapoviță</string>
+    <string name="text_size">Mărime text</string>
+    <string name="size_normal">Normal</string>
+    <string name="size_large">Mare</string>
 </resources>

@@ -24,6 +24,9 @@ object Prefs {
         sp(c).edit().putString("place", name).putFloat("lat", lat.toFloat()).putFloat("lon", lon.toFloat()).apply()
     }
 
+    fun textScale(c: Context) = if (sp(c).getString("size", "normal") == "large") 1.15f else 1f
+    fun size(c: Context) = sp(c).getString("size", "normal") ?: "normal"
+
     fun lastRefresh(c: Context) = sp(c).getLong("last", 0L)
     fun setLastRefresh(c: Context, t: Long) = sp(c).edit().putLong("last", t).apply()
 

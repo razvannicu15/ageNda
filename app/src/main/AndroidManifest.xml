@@ -28,13 +28,22 @@
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <!-- New launcher entry: forces launchers (One UI) to drop the cached old icon -->
+        <activity-alias
+            android:name=".Home"
+            android:exported="true"
+            android:icon="@mipmap/ic_app"
+            android:roundIcon="@mipmap/ic_app"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <activity
             android:name=".OpenEventActivity"

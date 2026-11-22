@@ -132,7 +132,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        section(R.string.sec_look) { add(themeTiles()) }
+        section(R.string.sec_look) {
+            add(themeTiles())
+            choiceRow(getString(R.string.text_size), R.drawable.si_text, ORANGE, Prefs.size(ctx),
+                listOf("normal" to getString(R.string.size_normal), "large" to getString(R.string.size_large))) {
+                Prefs.put(ctx, "size", it)
+            }
+        }
 
         section(R.string.sec_agenda) {
             if (!perm) {
@@ -441,6 +447,10 @@ class MainActivity : AppCompatActivity() {
                 icon.setImageResource(Weather.icon(w.sym)); icon.visibility = View.VISIBLE
             }
         }
+        val f = Prefs.textScale(this)
+        AgendaWidget.CLOCK_SIZES.forEach { (id, sz) ->
+            v.findViewById<TextView>(id)?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, sz * f)
+        }
         v.findViewById<View>(R.id.wx_block).setOnClickListener { if (!has) pickLocation() }
     }
 
@@ -464,7 +474,12 @@ class MainActivity : AppCompatActivity() {
         }
         rows.forEachIndexed { i, row ->
             val r = layoutInflater.inflate(R.layout.widget_row_event, box, false)
-            r.findViewById<TextView>(R.id.date).apply { text = row.date; setTextColor(if (row.today) p.accent else p.muted) }
+            val f = Prefs.textScale(this)
+            r.findViewById<TextView>(R.id.date).apply {
+                text = row.date; setTextColor(if (row.today) p.accent else p.muted); setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12.5f * f)
+            }
+            r.findViewById<TextView>(R.id.title).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f * f)
+            r.findViewById<TextView>(R.id.sub).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13.5f * f)
             r.findViewById<TextView>(R.id.title).apply { text = row.item.title; setTextColor(p.text) }
             r.findViewById<TextView>(R.id.sub).apply {
                 if (row.sub.isEmpty()) visibility = View.GONE
