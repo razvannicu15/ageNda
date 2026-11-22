@@ -124,4 +124,19 @@
     <string name="text_size">Mărime text</string>
     <string name="size_normal">Normal</string>
     <string name="size_large">Mare</string>
+    <string name="tab_widget">Widget</string>
+    <string name="tab_agenda">Agendă</string>
+    <string name="tab_weather">Vreme</string>
+    <string name="tab_general">General</string>
+    <string name="sec_details">Detalii</string>
+    <string name="sec_weather_data">Vreme</string>
+    <string name="sec_taps">La atingere</string>
+    <string name="wx_source">Sursă</string>
+    <string name="dot_pos">Bulina de culoare</string>
+    <string name="dot_start">Înainte de dată</string>
+    <string name="dot_mid">Între dată și eveniment</string>
+    <string name="dot_end">După eveniment</string>
+    <string name="dot_start_s">Început</string>
+    <string name="dot_mid_s">Mijloc</string>
+    <string name="dot_end_s">Final</string>
 </resources>

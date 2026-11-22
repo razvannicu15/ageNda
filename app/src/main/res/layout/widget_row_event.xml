@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One agenda row. The colour dot can sit at the start, between date and title, or at the end
+     (setting); only one dot + its matching inset separator are visible at a time. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/row_event"
     android:layout_width="match_parent"
@@ -9,12 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="60dp"
+        android:minHeight="66dp"
         android:orientation="horizontal"
         android:paddingStart="20dp"
-        android:paddingTop="9dp"
+        android:paddingTop="13dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="9dp">
+        android:paddingBottom="13dp">
+
+        <ImageView
+            android:id="@+id/dot_start"
+            android:layout_width="9dp"
+            android:layout_height="9dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/dot"
+            android:visibility="gone"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/date"
@@ -25,10 +36,20 @@
             android:textColor="#FF8E8E93"
             android:textSize="12.5dp" />
 
+        <ImageView
+            android:id="@+id/dot_mid"
+            android:layout_width="9dp"
+            android:layout_height="9dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:src="@drawable/dot"
+            android:visibility="gone"
+            android:importantForAccessibility="no" />
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -37,7 +58,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:lineSpacingExtra="3dp"
+                android:maxLines="3"
                 android:textColor="#FFFFFFFF"
                 android:textSize="17dp" />
 
@@ -45,7 +67,7 @@
                 android:id="@+id/sub"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="#FF8E8E93"
@@ -53,22 +75,47 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/dot"
-            android:layout_width="11dp"
-            android:layout_height="11dp"
-            android:layout_marginStart="12dp"
+            android:id="@+id/dot_end"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="14dp"
             android:src="@drawable/dot"
             android:importantForAccessibility="no" />
     </LinearLayout>
 
+    <!-- separators inset to the title, one per dot position -->
     <ImageView
-        android:id="@+id/line"
+        android:id="@+id/line_end"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="102dp"
         android:layout_marginEnd="20dp"
         android:scaleType="fitXY"
         android:src="@drawable/line"
         android:tint="#22FFFFFF"
+        android:importantForAccessibility="no" />
+
+    <ImageView
+        android:id="@+id/line_mid"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginEnd="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/line"
+        android:tint="#22FFFFFF"
+        android:visibility="gone"
+        android:importantForAccessibility="no" />
+
+    <ImageView
+        android:id="@+id/line_start"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="123dp"
+        android:layout_marginEnd="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/line"
+        android:tint="#22FFFFFF"
+        android:visibility="gone"
         android:importantForAccessibility="no" />
 </LinearLayout>

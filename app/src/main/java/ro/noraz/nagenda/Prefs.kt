@@ -27,6 +27,8 @@ object Prefs {
     fun textScale(c: Context) = if (sp(c).getString("size", "normal") == "large") 1.15f else 1f
     fun size(c: Context) = sp(c).getString("size", "normal") ?: "normal"
 
+    fun dot(c: Context) = sp(c).getString("dot", "mid") ?: "mid"
+
     fun lastRefresh(c: Context) = sp(c).getLong("last", 0L)
     fun setLastRefresh(c: Context, t: Long) = sp(c).edit().putLong("last", t).apply()
 

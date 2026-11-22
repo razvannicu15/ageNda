@@ -114,100 +114,150 @@ class MainActivity : AppCompatActivity() {
 
     // ================================================================== settings
 
+    private var tab = "widget"
+
     private fun rebuild() {
         renderPreview()
         sections.removeAllViews()
+        sections.addView(tabs())
         val perm = Agenda.hasPerm(this)
         val ctx = this
 
-        section(R.string.sec_widgets) {
-            listOf(
-                Triple(AgendaWidget::class.java, R.string.add_agenda, R.drawable.si_list),
-                Triple(WeatherWidget::class.java, R.string.add_weather, R.drawable.si_cloud),
-                Triple(ClockWidget::class.java, R.string.add_clock, R.drawable.si_widgets),
-            ).forEach { (cls, title, ic) ->
-                val n = AgendaWidget.countOf(ctx, cls)
-                row(getString(title), icon = ic, chip = INDIGO, subtitle = getString(R.string.add_hint),
-                    value = countLabel(n), valueColor = attr(M.attr.colorPrimary), chevron = true) { pin(cls) }
-            }
-        }
-
-        section(R.string.sec_look) {
-            add(themeTiles())
-            choiceRow(getString(R.string.text_size), R.drawable.si_text, ORANGE, Prefs.size(ctx),
-                listOf("normal" to getString(R.string.size_normal), "large" to getString(R.string.size_large))) {
-                Prefs.put(ctx, "size", it)
-            }
-        }
-
-        section(R.string.sec_agenda) {
-            if (!perm) {
-                row(getString(R.string.st_access), icon = R.drawable.si_lock, chip = RED,
-                    value = getString(R.string.st_denied), valueColor = attr(M.attr.colorError), chevron = true) {
-                    calPerm.launch(Manifest.permission.READ_CALENDAR)
+        when (tab) {
+            "widget" -> {
+                section(R.string.sec_widgets) {
+                    listOf(
+                        Triple(AgendaWidget::class.java, R.string.add_agenda, R.drawable.si_list),
+                        Triple(WeatherWidget::class.java, R.string.add_weather, R.drawable.si_cloud),
+                        Triple(ClockWidget::class.java, R.string.add_clock, R.drawable.si_widgets),
+                    ).forEach { (cls, title, ic) ->
+                        row(getString(title), icon = ic, chip = INDIGO, subtitle = getString(R.string.add_hint),
+                            value = countLabel(AgendaWidget.countOf(ctx, cls)), valueColor = attr(M.attr.colorPrimary),
+                            chevron = true) { pin(cls) }
+                    }
                 }
-            } else {
-                val cals = Agenda.calendars(ctx)
-                val hidden = Prefs.hidden(ctx)
-                val n = Agenda.items(ctx).size
-                val on = cals.count { it.id !in hidden }
-                row(getString(R.string.sec_calendars), icon = R.drawable.si_calendar, chip = RED,
-                    subtitle = getString(R.string.events_found, n),
-                    value = if (on == cals.size) getString(R.string.calendars_all) else "$on/${cals.size}",
-                    chevron = true) { pickCalendars(cals) }
+                section(R.string.sec_look) {
+                    add(themeTiles())
+                    choiceRow(getString(R.string.text_size), R.drawable.si_text, ORANGE, Prefs.size(ctx),
+                        listOf("normal" to getString(R.string.size_normal), "large" to getString(R.string.size_large))) {
+                        Prefs.put(ctx, "size", it)
+                    }
+                    choiceRow(getString(R.string.dot_pos), R.drawable.si_dot, TEAL, Prefs.dot(ctx),
+                        listOf("start" to getString(R.string.dot_start), "mid" to getString(R.string.dot_mid), "end" to getString(R.string.dot_end)),
+                        short = mapOf("start" to getString(R.string.dot_start_s), "mid" to getString(R.string.dot_mid_s), "end" to getString(R.string.dot_end_s))) {
+                        Prefs.put(ctx, "dot", it)
+                    }
+                }
             }
-            choiceRow(getString(R.string.days), R.drawable.si_hourglass, ORANGE, Prefs.days(ctx).toString(),
-                listOf("7" to "7", "14" to "14", "30" to "30")) { Prefs.put(ctx, "days", it.toInt()) }
-            switchRow(getString(R.string.show_location), R.drawable.si_pin, GREEN, Prefs.showLocation(ctx)) {
-                Prefs.put(ctx, "location", it); changed()
+            "agenda" -> {
+                section(R.string.sec_calendars) {
+                    if (!perm) {
+                        row(getString(R.string.st_access), icon = R.drawable.si_lock, chip = RED,
+                            value = getString(R.string.st_denied), valueColor = attr(M.attr.colorError), chevron = true) {
+                            calPerm.launch(Manifest.permission.READ_CALENDAR)
+                        }
+                    } else {
+                        val cals = Agenda.calendars(ctx)
+                        val hidden = Prefs.hidden(ctx)
+                        val on = cals.count { it.id !in hidden }
+                        row(getString(R.string.sec_calendars), icon = R.drawable.si_calendar, chip = RED,
+                            subtitle = getString(R.string.events_found, Agenda.items(ctx).size),
+                            value = if (on == cals.size) getString(R.string.calendars_all) else "$on/${cals.size}",
+                            chevron = true) { pickCalendars(cals) }
+                    }
+                    choiceRow(getString(R.string.days), R.drawable.si_hourglass, ORANGE, Prefs.days(ctx).toString(),
+                        listOf("7" to "7", "14" to "14", "30" to "30")) { Prefs.put(ctx, "days", it.toInt()) }
+                }
+                section(R.string.sec_details) {
+                    switchRow(getString(R.string.show_location), R.drawable.si_pin, GREEN, Prefs.showLocation(ctx)) {
+                        Prefs.put(ctx, "location", it); changed()
+                    }
+                    switchRow(getString(R.string.show_countdown), R.drawable.si_hourglass, TEAL, Prefs.showCountdown(ctx)) {
+                        Prefs.put(ctx, "countdown", it); changed()
+                    }
+                }
             }
-            switchRow(getString(R.string.show_countdown), R.drawable.si_list, TEAL, Prefs.showCountdown(ctx)) {
-                Prefs.put(ctx, "countdown", it); changed()
+            "weather" -> {
+                section(R.string.sec_weather_data) {
+                    row(getString(R.string.location), icon = R.drawable.si_pin, chip = BLUE,
+                        value = Prefs.placeName(ctx).ifEmpty { getString(R.string.wx_set_place) },
+                        valueColor = if (Weather.hasPlace(ctx)) null else attr(M.attr.colorPrimary),
+                        chevron = true) { pickLocation() }
+                    choiceRow(getString(R.string.units), R.drawable.si_thermo, ORANGE, Prefs.units(ctx),
+                        listOf("c" to getString(R.string.units_c), "f" to getString(R.string.units_f)),
+                        short = mapOf("c" to "°C", "f" to "°F")) {
+                        Prefs.put(ctx, "units", it)
+                        Weather.clear(ctx); Weather.refreshIfStale(ctx, force = true)
+                    }
+                    val wx = Weather.cached(ctx)
+                    row(getString(R.string.wx_source), icon = R.drawable.si_cloud, chip = TEAL, value = "yr.no",
+                        subtitle = wx?.let { getString(R.string.st_last) + ": " + DateFormat.getTimeFormat(ctx).format(Date(it.at)) })
+                }
+                section(R.string.sec_taps) {
+                    val chosen = Prefs.weatherApp(ctx)
+                    val wxLabel = if (chosen.isNotEmpty()) Apps.label(ctx, chosen)
+                    else Apps.detectedWeatherPkg(ctx)?.let { getString(R.string.weather_app_auto_found, Apps.label(ctx, it)) }
+                        ?: getString(R.string.weather_app_auto)
+                    row(getString(R.string.weather_app), icon = R.drawable.si_apps, chip = BLUE, value = wxLabel, chevron = true) {
+                        pickWeatherApp()
+                    }
+                    row(getString(R.string.clock_tap), icon = R.drawable.si_clock, chip = GRAY, value = getString(R.string.clock_tap_value))
+                }
+            }
+            else -> {
+                section(R.string.sec_general) {
+                    row(getString(R.string.st_access), icon = R.drawable.si_lock, chip = if (perm) GREEN else RED,
+                        value = getString(if (perm) R.string.st_granted else R.string.st_denied),
+                        valueColor = if (perm) null else attr(M.attr.colorError),
+                        chevron = !perm, onClick = if (perm) null else ({ calPerm.launch(Manifest.permission.READ_CALENDAR) }))
+                    choiceRow(getString(R.string.app_language), R.drawable.si_globe, BLUE, Prefs.lang(ctx),
+                        listOf("auto" to getString(R.string.lang_auto), "ro" to getString(R.string.lang_ro), "en" to getString(R.string.lang_en))) {
+                        Prefs.put(ctx, "lang", it)
+                        App.applyLang(it)
+                    }
+                    val last = Prefs.lastRefresh(ctx)
+                    row(getString(R.string.st_refresh), icon = R.drawable.ic_refresh, chip = GRAY,
+                        subtitle = getString(R.string.st_last) + ": " +
+                            (if (last == 0L) getString(R.string.st_never) else DateFormat.getTimeFormat(ctx).format(Date(last))),
+                        accent = true) {
+                        Weather.refreshIfStale(ctx, force = true)
+                        changed(); rebuild()
+                        Toast.makeText(ctx, R.string.refreshed, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                section(R.string.about) {
+                    row("ageNda ${version()}", icon = R.drawable.si_info, chip = INDIGO, subtitle = getString(R.string.about_text))
+                }
             }
         }
+    }
 
-        section(R.string.sec_weather) {
-            row(getString(R.string.location), icon = R.drawable.si_pin, chip = BLUE,
-                value = Prefs.placeName(ctx).ifEmpty { getString(R.string.wx_set_place) },
-                valueColor = if (Weather.hasPlace(ctx)) null else attr(M.attr.colorPrimary),
-                chevron = true) { pickLocation() }
-            choiceRow(getString(R.string.units), R.drawable.si_thermo, ORANGE, Prefs.units(ctx),
-                listOf("c" to getString(R.string.units_c), "f" to getString(R.string.units_f)),
-                short = mapOf("c" to "°C", "f" to "°F")) {
-                Prefs.put(ctx, "units", it)
-                Weather.clear(ctx); Weather.refreshIfStale(ctx, force = true)
-            }
-            val chosen = Prefs.weatherApp(ctx)
-            val wxLabel = if (chosen.isNotEmpty()) Apps.label(ctx, chosen)
-            else Apps.detectedWeatherPkg(ctx)?.let { getString(R.string.weather_app_auto_found, Apps.label(ctx, it)) }
-                ?: getString(R.string.weather_app_auto)
-            row(getString(R.string.weather_app), icon = R.drawable.si_cloud, chip = TEAL, value = wxLabel, chevron = true) {
-                pickWeatherApp()
-            }
-            row(getString(R.string.clock_tap), icon = R.drawable.si_clock, chip = GRAY, value = getString(R.string.clock_tap_value))
+    /** Segmented control under the preview: Widget · Agendă · Vreme · General. */
+    private fun tabs(): View {
+        val bar = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            background = GradientDrawable().apply { cornerRadius = dp(22).toFloat(); setColor(attr(M.attr.colorSurfaceContainerHigh)) }
+            setPadding(dp(4), dp(4), dp(4), dp(4))
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                .apply { topMargin = dp(20) }
         }
-
-        section(R.string.sec_general) {
-            if (perm) row(getString(R.string.st_access), icon = R.drawable.si_lock, chip = GREEN, value = getString(R.string.st_granted))
-            choiceRow(getString(R.string.app_language), R.drawable.si_globe, BLUE, Prefs.lang(ctx),
-                listOf("auto" to getString(R.string.lang_auto), "ro" to getString(R.string.lang_ro), "en" to getString(R.string.lang_en))) {
-                Prefs.put(ctx, "lang", it)
-                App.applyLang(it)
+        listOf("widget" to R.string.tab_widget, "agenda" to R.string.tab_agenda, "weather" to R.string.tab_weather, "general" to R.string.tab_general)
+            .forEach { (k, res) ->
+                val on = k == tab
+                bar.addView(text(getString(res), M.attr.textAppearanceLabelLarge,
+                    if (on) attr(M.attr.colorOnSurface) else attr(M.attr.colorOnSurfaceVariant)).apply {
+                    gravity = Gravity.CENTER
+                    maxLines = 1
+                    setPadding(0, dp(10), 0, dp(10))
+                    layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                    if (on) {
+                        background = GradientDrawable().apply { cornerRadius = dp(18).toFloat(); setColor(attr(M.attr.colorSurface)) }
+                        elevation = dp(1).toFloat()
+                    }
+                    setOnClickListener { if (!on) { tab = k; rebuild() } }
+                })
             }
-            val last = Prefs.lastRefresh(ctx)
-            row(getString(R.string.st_refresh), icon = R.drawable.ic_refresh, chip = GRAY,
-                subtitle = getString(R.string.st_last) + ": " +
-                    (if (last == 0L) getString(R.string.st_never) else DateFormat.getTimeFormat(ctx).format(Date(last))),
-                accent = true) {
-                Weather.refreshIfStale(ctx, force = true)
-                changed(); rebuild()
-                Toast.makeText(ctx, R.string.refreshed, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        section(R.string.about) {
-            row("ageNda ${version()}", icon = R.drawable.si_info, chip = INDIGO, subtitle = getString(R.string.about_text))
-        }
+        return bar
     }
 
     private fun countLabel(n: Int) = if (n > 0) "✓ $n" else null
@@ -485,10 +535,15 @@ class MainActivity : AppCompatActivity() {
                 if (row.sub.isEmpty()) visibility = View.GONE
                 else { text = row.sub; setTextColor(if (row.ongoing) p.accent else p.muted) }
             }
-            r.findViewById<ImageView>(R.id.dot).setColorFilter(row.item.color)
-            r.findViewById<ImageView>(R.id.line).apply {
-                imageTintList = null; setColorFilter(p.lineRgb); imageAlpha = p.lineAlpha
-                visibility = if (i == rows.lastIndex) View.INVISIBLE else View.VISIBLE
+            val dot = Prefs.dot(this)
+            RowParts.DOTS.forEach { (k, id) ->
+                r.findViewById<ImageView>(id).apply { visibility = if (k == dot) View.VISIBLE else View.GONE; setColorFilter(row.item.color) }
+            }
+            RowParts.LINES.forEach { (k, id) ->
+                r.findViewById<ImageView>(id).apply {
+                    imageTintList = null; setColorFilter(p.lineRgb); imageAlpha = p.lineAlpha
+                    visibility = if (k != dot) View.GONE else if (i == rows.lastIndex) View.INVISIBLE else View.VISIBLE
+                }
             }
             box.addView(r)
         }
@@ -680,7 +735,7 @@ class MainActivity : AppCompatActivity() {
         sections.addView(text(getString(titleRes).uppercase(Loc.locale(this)), M.attr.textAppearanceLabelMedium,
             attr(M.attr.colorOnSurfaceVariant)).apply {
             letterSpacing = 0.06f
-            setPadding(dp(18), dp(26), dp(16), dp(8))
+            setPadding(dp(18), dp(22), dp(16), dp(8))
         })
         val card = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL

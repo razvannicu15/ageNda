@@ -16,6 +16,7 @@ class AgendaService : RemoteViewsService() {
         private var rows: List<Row> = emptyList()
         private var pal: Palette = Palettes.of(c)
         private var f = 1f
+        private var dot = "mid"
 
         override fun onCreate() {}
 
@@ -25,6 +26,7 @@ class AgendaService : RemoteViewsService() {
                 rows = Agenda.rows(c)
                 pal = Palettes.of(c)
                 f = Prefs.textScale(c)
+                dot = Prefs.dot(c)
             } finally {
                 Binder.restoreCallingIdentity(token)
             }
@@ -41,11 +43,17 @@ class AgendaService : RemoteViewsService() {
             val rv = RemoteViews(c.packageName, R.layout.widget_row_event)
             val r = rows.getOrNull(position) ?: return rv
             val e = r.item
-            if (position == rows.lastIndex) rv.setViewVisibility(R.id.line, View.INVISIBLE)
-            else {
-                rv.setViewVisibility(R.id.line, View.VISIBLE)
-                rv.setInt(R.id.line, "setColorFilter", pal.lineRgb)
-                rv.setInt(R.id.line, "setImageAlpha", pal.lineAlpha)
+            val last = position == rows.lastIndex
+            RowParts.LINES.forEach { (k, id) ->
+                rv.setViewVisibility(id, if (k != dot) View.GONE else if (last) View.INVISIBLE else View.VISIBLE)
+                if (k == dot) {
+                    rv.setInt(id, "setColorFilter", pal.lineRgb)
+                    rv.setInt(id, "setImageAlpha", pal.lineAlpha)
+                }
+            }
+            RowParts.DOTS.forEach { (k, id) ->
+                rv.setViewVisibility(id, if (k == dot) View.VISIBLE else View.GONE)
+                if (k == dot) rv.setInt(id, "setColorFilter", e.color)
             }
 
             val dip = android.util.TypedValue.COMPLEX_UNIT_DIP
@@ -62,7 +70,6 @@ class AgendaService : RemoteViewsService() {
                 rv.setTextViewText(R.id.sub, r.sub)
                 rv.setTextColor(R.id.sub, if (r.ongoing) pal.accent else pal.muted)
             }
-            rv.setInt(R.id.dot, "setColorFilter", e.color)
 
             val fill = Intent().apply {
                 data = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, e.id)

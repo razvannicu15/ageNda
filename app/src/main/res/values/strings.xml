@@ -125,4 +125,19 @@
     <string name="text_size">Text size</string>
     <string name="size_normal">Normal</string>
     <string name="size_large">Large</string>
+    <string name="tab_widget">Widget</string>
+    <string name="tab_agenda">Agenda</string>
+    <string name="tab_weather">Weather</string>
+    <string name="tab_general">General</string>
+    <string name="sec_details">Details</string>
+    <string name="sec_weather_data">Weather</string>
+    <string name="sec_taps">When tapped</string>
+    <string name="wx_source">Source</string>
+    <string name="dot_pos">Colour dot</string>
+    <string name="dot_start">Before the date</string>
+    <string name="dot_mid">Between date and event</string>
+    <string name="dot_end">After the event</string>
+    <string name="dot_start_s">Start</string>
+    <string name="dot_mid_s">Middle</string>
+    <string name="dot_end_s">End</string>
 </resources>
