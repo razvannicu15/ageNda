@@ -14,6 +14,16 @@ object Prefs {
     fun hidden(c: Context): Set<Long> =
         (sp(c).getStringSet("hidden", emptySet()) ?: emptySet()).mapNotNull { it.toLongOrNull() }.toSet()
 
+    fun units(c: Context) = sp(c).getString("units", "c") ?: "c"
+    fun placeName(c: Context) = sp(c).getString("place", "") ?: ""
+    fun lat(c: Context) = sp(c).getFloat("lat", 0f).toDouble()
+    fun lon(c: Context) = sp(c).getFloat("lon", 0f).toDouble()
+    fun weatherApp(c: Context) = sp(c).getString("wx_app", "") ?: ""
+    fun previewKind(c: Context) = sp(c).getString("preview", "clock") ?: "clock"
+    fun setPlace(c: Context, name: String, lat: Double, lon: Double) {
+        sp(c).edit().putString("place", name).putFloat("lat", lat.toFloat()).putFloat("lon", lon.toFloat()).apply()
+    }
+
     fun lastRefresh(c: Context) = sp(c).getLong("last", 0L)
     fun setLastRefresh(c: Context, t: Long) = sp(c).edit().putLong("last", t).apply()
 
