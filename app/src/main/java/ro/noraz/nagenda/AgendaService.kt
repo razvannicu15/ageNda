@@ -77,6 +77,11 @@ class AgendaService : RemoteViewsService() {
                 putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.end)
             }
             rv.setOnClickFillInIntent(R.id.row_event, fill)
+            // date + dot → add a new event on that day
+            val zone = java.time.ZoneId.systemDefault()
+            val dayStart = maxOf(e.startDate, java.time.LocalDate.now(zone)).atStartOfDay(zone).toInstant().toEpochMilli()
+            val add = Intent().putExtra(OpenEventActivity.EXTRA_ADD_DAY, dayStart)
+            for (v in intArrayOf(R.id.date, R.id.dot_start, R.id.dot_mid, R.id.dot_end)) rv.setOnClickFillInIntent(v, add)
             return rv
         }
     }
