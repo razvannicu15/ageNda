@@ -140,4 +140,6 @@
     <string name="dot_start_s">Start</string>
     <string name="dot_mid_s">Middle</string>
     <string name="dot_end_s">End</string>
+    <string name="dedupe">No duplicate holidays</string>
+    <string name="hourly">Hourly forecast</string>
 </resources>

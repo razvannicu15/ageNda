@@ -62,7 +62,10 @@ class AgendaService : RemoteViewsService() {
             rv.setTextViewTextSize(R.id.sub, dip, 13.5f * f)
             rv.setTextViewText(R.id.date, r.date)
             rv.setTextColor(R.id.date, if (r.today) pal.accent else pal.muted)
-            rv.setTextViewText(R.id.title, e.title)
+            // today's events: medium weight
+            rv.setTextViewText(R.id.title, if (r.today) android.text.SpannableString(e.title).apply {
+                setSpan(android.text.style.TypefaceSpan("sans-serif-medium"), 0, length, 0)
+            } else e.title)
             rv.setTextColor(R.id.title, pal.text)
             if (r.sub.isEmpty()) rv.setViewVisibility(R.id.sub, View.GONE)
             else {

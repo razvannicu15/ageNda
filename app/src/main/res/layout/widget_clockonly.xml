@@ -5,106 +5,279 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:orientation="vertical">
 
-        <!-- clock: tap → alarms -->
         <LinearLayout
-            android:id="@+id/clock_block"
-            android:layout_width="0dp"
+            android:id="@+id/top"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-            <TextClock
-                android:id="@+id/clock_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:format12Hour="h:mm"
-                android:format24Hour="HH:mm"
-                android:includeFontPadding="false"
-                android:letterSpacing="-0.03"
-                android:textColor="#FFFFFFFF"
-                android:textSize="64dp"
-                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
-
-            <TextClock
-                android:id="@+id/clock_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:ellipsize="end"
-                android:format12Hour="EEEE, d MMMM"
-                android:format24Hour="EEEE, d MMMM"
-                android:maxLines="1"
-                android:textColor="#E6FFFFFF"
-                android:textSize="16dp"
-                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
-        </LinearLayout>
-
-        <!-- weather: tap → weather app -->
-        <LinearLayout
-            android:id="@+id/wx_block"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:gravity="end"
-            android:orientation="vertical">
-
+            <!-- clock: tap → alarms -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/clock_block"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/wx_icon"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:src="@drawable/wx_partly_day"
-                    android:importantForAccessibility="no" />
-
-                <TextView
-                    android:id="@+id/wx_temp"
+                <TextClock
+                    android:id="@+id/clock_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
                     android:fontFamily="sans-serif-light"
+                    android:format12Hour="h:mm"
+                    android:format24Hour="HH:mm"
                     android:includeFontPadding="false"
-                    android:text="—"
+                    android:letterSpacing="-0.03"
                     android:textColor="#FFFFFFFF"
-                    android:textSize="36dp"
+                    android:textSize="64dp"
+                    android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+
+                <TextClock
+                    android:id="@+id/clock_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:ellipsize="end"
+                    android:format12Hour="EEEE, d MMMM"
+                    android:format24Hour="EEEE, d MMMM"
+                    android:maxLines="1"
+                    android:textColor="#E6FFFFFF"
+                    android:textSize="16dp"
                     android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/wx_cond"
+            <!-- weather: tap → weather app -->
+            <LinearLayout
+                android:id="@+id/wx_block"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="#FFFFFFFF"
-                android:textSize="15dp"
-                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                android:layout_marginStart="12dp"
+                android:gravity="end"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/wx_hilo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14dp"
-                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/wx_icon"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/wx_partly_day"
+                        android:importantForAccessibility="no" />
+
+                    <TextView
+                        android:id="@+id/wx_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="sans-serif-light"
+                        android:includeFontPadding="false"
+                        android:text="—"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="36dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/wx_cond"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="15dp"
+                    android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+
+                <TextView
+                    android:id="@+id/wx_hilo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="14dp"
+                    android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/hours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:visibility="gone">
+    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+    
+                    <TextView
+                        android:id="@+id/h0_t"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#BFFFFFFF"
+                        android:textSize="12dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+    
+                    <ImageView
+                        android:id="@+id/h0_i"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="3dp"
+                        android:importantForAccessibility="no" />
+    
+                    <TextView
+                        android:id="@+id/h0_v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="14dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+    
+                    <TextView
+                        android:id="@+id/h1_t"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#BFFFFFFF"
+                        android:textSize="12dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+    
+                    <ImageView
+                        android:id="@+id/h1_i"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="3dp"
+                        android:importantForAccessibility="no" />
+    
+                    <TextView
+                        android:id="@+id/h1_v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="14dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+    
+                    <TextView
+                        android:id="@+id/h2_t"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#BFFFFFFF"
+                        android:textSize="12dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+    
+                    <ImageView
+                        android:id="@+id/h2_i"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="3dp"
+                        android:importantForAccessibility="no" />
+    
+                    <TextView
+                        android:id="@+id/h2_v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="14dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+    
+                    <TextView
+                        android:id="@+id/h3_t"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#BFFFFFFF"
+                        android:textSize="12dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+    
+                    <ImageView
+                        android:id="@+id/h3_i"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="3dp"
+                        android:importantForAccessibility="no" />
+    
+                    <TextView
+                        android:id="@+id/h3_v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="14dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+    
+                    <TextView
+                        android:id="@+id/h4_t"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#BFFFFFFF"
+                        android:textSize="12dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+    
+                    <ImageView
+                        android:id="@+id/h4_i"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="3dp"
+                        android:importantForAccessibility="no" />
+    
+                    <TextView
+                        android:id="@+id/h4_v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="14dp"
+                        android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+                </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

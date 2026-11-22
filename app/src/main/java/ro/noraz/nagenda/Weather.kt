@@ -15,6 +15,7 @@ import kotlin.math.roundToInt
 data class Wx(val temp: Int, val sym: String, val max: Int, val min: Int, val at: Long) {
     val isDay get() = !sym.endsWith("_night")
 }
+data class Hour(val label: String, val temp: Int, val sym: String)
 data class Place(val name: String, val detail: String, val lat: Double, val lon: Double)
 
 /** Weather from yr.no / MET Norway (free, no account, no ads). City search: Open-Meteo geocoding. */
@@ -36,6 +37,12 @@ object Weather {
             .putInt("wx_t", w.temp).putString("wx_sym", w.sym)
             .putInt("wx_max", w.max).putInt("wx_min", w.min).putLong("wx_at", w.at).apply()
     }
+
+    fun hours(c: Context): List<Hour> =
+        (c.getSharedPreferences("nagenda", Context.MODE_PRIVATE).getString("wx_hours", "") ?: "")
+            .split(';').mapNotNull { p ->
+                val f = p.split('|'); if (f.size == 3) f[1].toIntOrNull()?.let { Hour(f[0], it, f[2]) } else null
+            }
 
     fun clear(c: Context) {
         c.getSharedPreferences("nagenda", Context.MODE_PRIVATE).edit().remove("wx_at").remove("wx_day").apply()
@@ -73,6 +80,20 @@ object Weather {
             }
             sp.edit().putString("wx_day", today.toString()).putFloat("wx_rmax", max.toFloat()).putFloat("wx_rmin", min.toFloat()).apply()
             fun u(v: Double) = (if (Prefs.units(c) == "f") v * 9 / 5 + 32 else v).roundToInt()
+            // next hours: every 2 h, 5 slots
+            val hf = java.time.format.DateTimeFormatter.ofPattern(
+                if (android.text.format.DateFormat.is24HourFormat(c)) "HH:mm" else "h a", Loc.locale(c))
+            val hours = (0 until 5).mapNotNull { k ->
+                val i = 1 + k * 2
+                if (i >= series.length()) return@mapNotNull null
+                val e = series.getJSONObject(i)
+                val d = e.getJSONObject("data")
+                val hs = d.optJSONObject("next_1_hours")?.optJSONObject("summary")?.optString("symbol_code")
+                    ?: d.optJSONObject("next_6_hours")?.optJSONObject("summary")?.optString("symbol_code") ?: "cloudy"
+                val t = d.getJSONObject("instant").getJSONObject("details").getDouble("air_temperature")
+                "${hf.format(java.time.Instant.parse(e.getString("time")).atZone(zone))}|${u(t)}|$hs"
+            }
+            sp.edit().putString("wx_hours", hours.joinToString(";")).apply()
             Wx(u(now), sym, u(max), u(min), System.currentTimeMillis()).also { save(c, it) }
         } catch (e: Exception) {
             android.util.Log.w("ageNda", "weather", e); null

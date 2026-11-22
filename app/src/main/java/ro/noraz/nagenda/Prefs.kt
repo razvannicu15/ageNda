@@ -29,6 +29,9 @@ object Prefs {
 
     fun dot(c: Context) = sp(c).getString("dot", "mid") ?: "mid"
 
+    fun dedupe(c: Context) = sp(c).getBoolean("dedupe", true)
+    fun hourly(c: Context) = sp(c).getBoolean("hourly", true)
+
     fun lastRefresh(c: Context) = sp(c).getLong("last", 0L)
     fun setLastRefresh(c: Context, t: Long) = sp(c).edit().putLong("last", t).apply()
 

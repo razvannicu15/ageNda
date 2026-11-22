@@ -139,4 +139,6 @@
     <string name="dot_start_s">Început</string>
     <string name="dot_mid_s">Mijloc</string>
     <string name="dot_end_s">Final</string>
+    <string name="dedupe">Sărbători fără dubluri</string>
+    <string name="hourly">Prognoză pe ore</string>
 </resources>

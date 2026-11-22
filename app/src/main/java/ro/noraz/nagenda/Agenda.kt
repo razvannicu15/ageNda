@@ -71,6 +71,35 @@ object Agenda {
         return out
     }
 
+    /**
+     * Google holiday calendars are subscribed per language ("ro.usa#holiday@…", "en.usa#holiday@…"),
+     * so the same holiday shows twice ("Ziua Recunoștinței" + "Thanksgiving Day").
+     * For each region keep one calendar (the app language if present) and skip the others.
+     */
+    fun duplicateHolidayCalendars(c: Context): Set<Long> {
+        val re = Regex("""^([a-z]{2,3}(?:-[a-z]{2})?)\.([^#]+)#holiday@group\.v\.calendar\.google\.com$""", RegexOption.IGNORE_CASE)
+        val byRegion = mutableMapOf<String, MutableList<Pair<Long, String>>>()
+        try {
+            c.contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.OWNER_ACCOUNT),
+                "${CalendarContract.Calendars.VISIBLE} = 1", null, null,
+            )?.use { cur ->
+                while (cur.moveToNext()) {
+                    val m = re.find(cur.getString(1) ?: continue) ?: continue
+                    byRegion.getOrPut(m.groupValues[2].lowercase()) { mutableListOf() } += cur.getLong(0) to m.groupValues[1].lowercase()
+                }
+            }
+        } catch (_: Exception) { }
+        val lang = Loc.locale(c).language
+        val drop = mutableSetOf<Long>()
+        byRegion.values.filter { it.size > 1 }.forEach { cals ->
+            val keep = cals.firstOrNull { it.second.startsWith(lang) } ?: cals.minBy { it.first }
+            cals.forEach { if (it.first != keep.first) drop += it.first }
+        }
+        return drop
+    }
+
     fun items(c: Context): List<CalItem> {
         if (!hasPerm(c)) return emptyList()
         val zone = ZoneId.systemDefault()
@@ -80,7 +109,7 @@ object Agenda {
         val now = System.currentTimeMillis()
         val from = today.atStartOfDay(zone).toInstant().toEpochMilli() - DAY
         val to = today.plusDays(days.toLong()).atStartOfDay(zone).toInstant().toEpochMilli() + DAY
-        val hidden = Prefs.hidden(c)
+        val hidden = Prefs.hidden(c) + (if (Prefs.dedupe(c)) duplicateHolidayCalendars(c) else emptySet())
 
         val uri = CalendarContract.Instances.CONTENT_URI.buildUpon().also {
             ContentUris.appendId(it, from)

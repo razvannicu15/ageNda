@@ -129,8 +129,27 @@ open class AgendaWidget : AppWidgetProvider() {
         /** Base sizes (dp) of the clock/weather texts; scaled by the "text size" setting. */
         val CLOCK_SIZES = mapOf(R.id.clock_time to 64f, R.id.clock_date to 16f, R.id.wx_temp to 36f, R.id.wx_cond to 15f, R.id.wx_hilo to 14f)
 
+        val HOUR_IDS = listOf(
+            Triple(R.id.h0_t, R.id.h0_i, R.id.h0_v), Triple(R.id.h1_t, R.id.h1_i, R.id.h1_v),
+            Triple(R.id.h2_t, R.id.h2_i, R.id.h2_v), Triple(R.id.h3_t, R.id.h3_i, R.id.h3_v),
+            Triple(R.id.h4_t, R.id.h4_i, R.id.h4_v),
+        )
+
         private fun renderClock(c: Context, rv: RemoteViews) {
             val f = Prefs.textScale(c)
+            val hours = if (Prefs.hourly(c) && Weather.hasPlace(c)) Weather.hours(c) else emptyList()
+            if (hours.size < HOUR_IDS.size) rv.setViewVisibility(R.id.hours, View.GONE)
+            else {
+                rv.setViewVisibility(R.id.hours, View.VISIBLE)
+                HOUR_IDS.forEachIndexed { i, (t, ic, v) ->
+                    val h = hours[i]
+                    rv.setTextViewText(t, h.label)
+                    rv.setImageViewResource(ic, Weather.icon(h.sym))
+                    rv.setTextViewText(v, "${h.temp}°")
+                    rv.setTextViewTextSize(t, android.util.TypedValue.COMPLEX_UNIT_DIP, 12f * f)
+                    rv.setTextViewTextSize(v, android.util.TypedValue.COMPLEX_UNIT_DIP, 14f * f)
+                }
+            }
             CLOCK_SIZES.forEach { (id, sz) -> rv.setTextViewTextSize(id, android.util.TypedValue.COMPLEX_UNIT_DIP, sz * f) }
             val lc = Loc.ctx(c)
             val w = Weather.cached(c)

@@ -159,6 +159,7 @@ class MainActivity : AppCompatActivity() {
             listOf("7" to "7", "14" to "14", "30" to "30")) { Prefs.put(ctx, "days", it.toInt()) }
         switchItem(R.drawable.ic_pin_outline, getString(R.string.show_location), Prefs.showLocation(ctx)) { Prefs.put(ctx, "location", it) }
         switchItem(R.drawable.so_agenda, getString(R.string.show_countdown), Prefs.showCountdown(ctx)) { Prefs.put(ctx, "countdown", it) }
+        switchItem(R.drawable.si_calendar, getString(R.string.dedupe), Prefs.dedupe(ctx)) { Prefs.put(ctx, "dedupe", it) }
 
         header(R.string.sec_weather_data)
         item(R.drawable.ic_pin_outline, getString(R.string.location),
@@ -167,6 +168,7 @@ class MainActivity : AppCompatActivity() {
         segmented(R.drawable.si_thermo, getString(R.string.units), Prefs.units(ctx), listOf("c" to "°C", "f" to "°F")) {
             Prefs.put(ctx, "units", it); Weather.clear(ctx); Weather.refreshIfStale(ctx, force = true)
         }
+        switchItem(R.drawable.si_clock, getString(R.string.hourly), Prefs.hourly(ctx)) { Prefs.put(ctx, "hourly", it) }
         val chosen = Prefs.weatherApp(ctx)
         item(R.drawable.so_cloud, getString(R.string.weather_app),
             value = if (chosen.isNotEmpty()) Apps.label(ctx, chosen)
@@ -416,6 +418,18 @@ class MainActivity : AppCompatActivity() {
                 icon.setImageResource(Weather.icon(w.sym)); icon.visibility = View.VISIBLE
             }
         }
+        val hours = if (Prefs.hourly(this) && has) Weather.hours(this) else emptyList()
+        v.findViewById<View>(R.id.hours)?.let { row ->
+            if (hours.size < AgendaWidget.HOUR_IDS.size) row.visibility = View.GONE
+            else {
+                row.visibility = View.VISIBLE
+                AgendaWidget.HOUR_IDS.forEachIndexed { i, (t, ic, tv) ->
+                    v.findViewById<TextView>(t).text = hours[i].label
+                    v.findViewById<ImageView>(ic).setImageResource(Weather.icon(hours[i].sym))
+                    v.findViewById<TextView>(tv).text = "${hours[i].temp}°"
+                }
+            }
+        }
         val f = Prefs.textScale(this)
         AgendaWidget.CLOCK_SIZES.forEach { (id, sz) ->
             v.findViewById<TextView>(id)?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, sz * f)
@@ -449,7 +463,10 @@ class MainActivity : AppCompatActivity() {
             }
             r.findViewById<TextView>(R.id.title).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f * f)
             r.findViewById<TextView>(R.id.sub).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13.5f * f)
-            r.findViewById<TextView>(R.id.title).apply { text = row.item.title; setTextColor(p.text) }
+            r.findViewById<TextView>(R.id.title).apply {
+                text = row.item.title; setTextColor(p.text)
+                typeface = android.graphics.Typeface.create(if (row.today) "sans-serif-medium" else "sans-serif", android.graphics.Typeface.NORMAL)
+            }
             r.findViewById<TextView>(R.id.sub).apply {
                 if (row.sub.isEmpty()) visibility = View.GONE
                 else { text = row.sub; setTextColor(if (row.ongoing) p.accent else p.muted) }
