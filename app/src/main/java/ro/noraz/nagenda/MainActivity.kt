@@ -620,7 +620,7 @@ class MainActivity : AppCompatActivity() {
                 isAllCaps = false
                 maxLines = 1
                 minWidth = 0; minimumWidth = 0
-                icon = null; iconPadding = 0
+                this.icon = null; iconPadding = 0
                 setPaddingRelative(dp(4), paddingTop, dp(4), paddingBottom)
                 // never truncate: shrink the label instead when the system font is large
                 setAutoSizeTextTypeUniformWithConfiguration(10, 16, 1, TypedValue.COMPLEX_UNIT_SP)
