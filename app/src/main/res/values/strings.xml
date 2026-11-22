@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">ageNda</string>
+    <string name="widget_desc">Your agenda, elegant and simple</string>
+    <string name="tagline">Your agenda, elegant and simple</string>
+
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="all_day">All day</string>
+    <string name="all_day_until">All day · until %s</string>
+    <string name="until_day">until %s</string>
+    <string name="now_until">Now · until %s</string>
+    <string name="no_title">(no title)</string>
+    <string name="empty_days">Nothing in the next %d days ✨</string>
+    <string name="need_permission">Tap to allow calendar access</string>
+    <string name="today_count_none">Free day</string>
+    <plurals name="today_count">
+        <item quantity="one">%d event today</item>
+        <item quantity="other">%d events today</item>
+    </plurals>
+    <plurals name="in_days">
+        <item quantity="one">in %d day</item>
+        <item quantity="other">in %d days</item>
+    </plurals>
+
+    <string name="perm_title">Calendar access</string>
+    <string name="perm_text">ageNda only reads your events to show them in the widget. Nothing leaves your phone.</string>
+    <string name="perm_btn">Allow</string>
+    <string name="pin_btn">Add widget to home screen</string>
+    <string name="pin_manual">Long-press the home screen → Widgets → ageNda</string>
+
+    <string name="sec_look">Look</string>
+    <string name="theme">Theme</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="colors">Colors</string>
+    <string name="colors_dynamic">Material You</string>
+    <string name="colors_neutral">Neutral</string>
+    <string name="opacity">Background opacity</string>
+
+    <string name="sec_content">Content</string>
+    <string name="days">Days shown</string>
+    <string name="show_location">Show location</string>
+    <string name="show_countdown">Show “in N days”</string>
+
+    <string name="sec_calendars">Calendars</string>
+    <string name="calendars_need_perm">Allow access to choose calendars</string>
+
+    <string name="sec_language">Language</string>
+    <string name="lang_auto">System</string>
+    <string name="lang_ro" translatable="false">Română</string>
+    <string name="lang_en" translatable="false">English</string>
+
+    <string name="footer">ageNda %s · by norAz · no ads</string>
+</resources>

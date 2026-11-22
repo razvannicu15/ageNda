@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_desc">Agenda ta, elegantă și simplă</string>
+    <string name="tagline">Agenda ta, elegantă și simplă</string>
+
+    <string name="today">Azi</string>
+    <string name="tomorrow">Mâine</string>
+    <string name="all_day">Toată ziua</string>
+    <string name="all_day_until">Toată ziua · până pe %s</string>
+    <string name="until_day">până pe %s</string>
+    <string name="now_until">Acum · până la %s</string>
+    <string name="no_title">(fără titlu)</string>
+    <string name="empty_days">Nimic programat în următoarele %d zile ✨</string>
+    <string name="need_permission">Atinge ca să permiți accesul la calendar</string>
+    <string name="today_count_none">Zi liberă</string>
+    <plurals name="today_count">
+        <item quantity="one">%d eveniment azi</item>
+        <item quantity="few">%d evenimente azi</item>
+        <item quantity="other">%d de evenimente azi</item>
+    </plurals>
+    <plurals name="in_days">
+        <item quantity="one">în %d zi</item>
+        <item quantity="few">în %d zile</item>
+        <item quantity="other">în %d de zile</item>
+    </plurals>
+
+    <string name="perm_title">Acces la calendar</string>
+    <string name="perm_text">ageNda doar citește evenimentele ca să le afișeze în widget. Nimic nu pleacă de pe telefon.</string>
+    <string name="perm_btn">Permite</string>
+    <string name="pin_btn">Adaugă widgetul pe ecran</string>
+    <string name="pin_manual">Apasă lung pe ecran → Widgeturi → ageNda</string>
+
+    <string name="sec_look">Aspect</string>
+    <string name="theme">Temă</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_light">Luminos</string>
+    <string name="theme_dark">Întunecat</string>
+    <string name="colors">Culori</string>
+    <string name="colors_dynamic">Material You</string>
+    <string name="colors_neutral">Neutru</string>
+    <string name="opacity">Opacitate fundal</string>
+
+    <string name="sec_content">Conținut</string>
+    <string name="days">Zile afișate</string>
+    <string name="show_location">Arată locația</string>
+    <string name="show_countdown">Arată „în N zile”</string>
+
+    <string name="sec_calendars">Calendare</string>
+    <string name="calendars_need_perm">Permite accesul ca să alegi calendarele</string>
+
+    <string name="sec_language">Limbă</string>
+    <string name="lang_auto">Sistem</string>
+
+    <string name="footer">ageNda %s · by norAz · fără reclame</string>
+</resources>
