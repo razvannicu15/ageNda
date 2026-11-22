@@ -22,7 +22,7 @@ class AgendaWidget : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(c: Context, mgr: AppWidgetManager, id: Int, opts: Bundle) {
-        render(c, mgr, id, Agenda.items(c))
+        updateAll(c)
     }
 
     override fun onReceive(c: Context, intent: Intent) {
@@ -32,6 +32,10 @@ class AgendaWidget : AppWidgetProvider() {
             Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED,
             Intent.ACTION_LOCALE_CHANGED, Intent.ACTION_DATE_CHANGED -> updateAll(c)
         }
+    }
+
+    override fun onEnabled(c: Context) {
+        updateAll(c)
     }
 
     override fun onDisabled(c: Context) {
@@ -52,7 +56,16 @@ class AgendaWidget : AppWidgetProvider() {
             @Suppress("DEPRECATION")
             mgr.notifyAppWidgetViewDataChanged(ids, R.id.list)
             schedule(c, items)
+            Prefs.setLastRefresh(c, System.currentTimeMillis())
         }
+
+        fun count(c: Context) = AppWidgetManager.getInstance(c)
+            .getAppWidgetIds(ComponentName(c, AgendaWidget::class.java)).size
+
+        fun refreshIntent(c: Context): PendingIntent = PendingIntent.getBroadcast(
+            c, 3, Intent(c, AgendaWidget::class.java).setAction(ACTION_REFRESH),
+            PendingIntent.FLAG_IMMUTABLE,
+        )
 
         private fun render(c: Context, mgr: AppWidgetManager, id: Int, items: List<CalItem>) {
             val lc = Loc.ctx(c)
@@ -110,13 +123,7 @@ class AgendaWidget : AppWidgetProvider() {
                     PendingIntent.FLAG_IMMUTABLE,
                 ),
             )
-            rv.setOnClickPendingIntent(
-                R.id.btn_refresh,
-                PendingIntent.getBroadcast(
-                    c, 3, Intent(c, AgendaWidget::class.java).setAction(ACTION_REFRESH),
-                    PendingIntent.FLAG_IMMUTABLE,
-                ),
-            )
+            rv.setOnClickPendingIntent(R.id.btn_refresh, refreshIntent(c))
             mgr.updateAppWidget(id, rv)
         }
 

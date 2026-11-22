@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:src="@drawable/widget_bg"
+        android:tint="#FF0E0E10"
         android:importantForAccessibility="no" />
 
     <LinearLayout
@@ -29,6 +30,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/card_top"
+                android:tint="#FF232226"
                 android:importantForAccessibility="no" />
 
             <LinearLayout
@@ -44,6 +46,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_calendar"
+                    android:tint="#FFF2F2F7"
                     android:importantForAccessibility="no" />
 
                 <TextView
@@ -55,6 +58,7 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
+                    android:textColor="#FFF2F2F7"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -63,6 +67,7 @@
                     android:layout_height="44dp"
                     android:padding="10dp"
                     android:src="@drawable/ic_add"
+                    android:tint="#FFF2F2F7"
                     android:contentDescription="+" />
 
                 <ImageView
@@ -71,6 +76,7 @@
                     android:layout_height="44dp"
                     android:padding="11dp"
                     android:src="@drawable/ic_refresh"
+                    android:tint="#FFF2F2F7"
                     android:contentDescription="⟳" />
             </LinearLayout>
         </FrameLayout>
@@ -100,6 +106,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:src="@drawable/card_last"
+                    android:tint="#FF232226"
                     android:importantForAccessibility="no" />
 
                 <TextView
@@ -108,6 +115,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="16dp"
+                    android:textColor="#FF9A9AA6"
                     android:textSize="14sp" />
             </FrameLayout>
         </FrameLayout>

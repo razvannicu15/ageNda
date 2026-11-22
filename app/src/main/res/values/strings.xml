@@ -53,4 +53,17 @@
     <string name="lang_en" translatable="false">English</string>
 
     <string name="footer">ageNda %s · by norAz · no ads</string>
+    <string name="preview">Preview</string>
+    <string name="sec_status">Status</string>
+    <string name="st_access">Calendar access</string>
+    <string name="st_granted">Allowed</string>
+    <string name="st_denied">Tap to allow</string>
+    <string name="st_widgets">Widgets on screen</string>
+    <string name="st_events">Upcoming events</string>
+    <string name="st_last">Last refresh</string>
+    <string name="st_never">—</string>
+    <string name="st_refresh">Refresh now</string>
+    <string name="refreshed">Widget refreshed</string>
+    <string name="app_language">App language</string>
+    <string name="cancel">Cancel</string>
 </resources>

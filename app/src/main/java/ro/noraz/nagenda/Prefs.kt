@@ -15,6 +15,9 @@ object Prefs {
     fun hidden(c: Context): Set<Long> =
         (sp(c).getStringSet("hidden", emptySet()) ?: emptySet()).mapNotNull { it.toLongOrNull() }.toSet()
 
+    fun lastRefresh(c: Context) = sp(c).getLong("last", 0L)
+    fun setLastRefresh(c: Context, t: Long) = sp(c).edit().putLong("last", t).apply()
+
     fun put(c: Context, key: String, value: Any) {
         val e = sp(c).edit()
         when (value) {

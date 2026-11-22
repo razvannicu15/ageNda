@@ -52,4 +52,17 @@
     <string name="lang_auto">Sistem</string>
 
     <string name="footer">ageNda %s · by norAz · fără reclame</string>
+    <string name="preview">Previzualizare</string>
+    <string name="sec_status">Stare</string>
+    <string name="st_access">Acces la calendar</string>
+    <string name="st_granted">Permis</string>
+    <string name="st_denied">Atinge ca să permiți</string>
+    <string name="st_widgets">Widgeturi pe ecran</string>
+    <string name="st_events">Evenimente găsite</string>
+    <string name="st_last">Ultima actualizare</string>
+    <string name="st_never">—</string>
+    <string name="st_refresh">Actualizează acum</string>
+    <string name="refreshed">Widget actualizat</string>
+    <string name="app_language">Limba aplicației</string>
+    <string name="cancel">Anulează</string>
 </resources>
