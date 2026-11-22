@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
+
+        <!-- weather: tap → weather app -->
+        <LinearLayout
+            android:id="@+id/wx_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/wx_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:includeFontPadding="false"
+                android:letterSpacing="-0.02"
+                android:text="6°"
+                android:textColor="#FFFFFFFF"
+                android:textSize="52dp"
+                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/wx_pin"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_pin_outline"
+                    android:tint="#D9FFFFFF"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/wx_place"
+                android:text="Luna de Sus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#D9FFFFFF"
+                    android:textSize="15dp"
+                    android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/wx_cond"
+                android:text="Parțial noros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#FFFFFFFF"
+                android:textSize="16dp"
+                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+
+            <TextView
+                android:id="@+id/wx_hilo"
+                android:text="↑7° / ↓3°"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="#FFFFFFFF"
+                android:textSize="16dp"
+                android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/wx_icon"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="-6dp"
+                android:src="@drawable/wx_partly_day"
+                android:importantForAccessibility="no" />
+
+            <FrameLayout
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- clock: tap → alarms -->
+            <LinearLayout
+                android:id="@+id/clock_block"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextClock
+                    android:id="@+id/clock_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:format12Hour="EEE, d MMMM"
+                    android:format24Hour="EEE, d MMMM"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="16dp"
+                    android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+
+                <TextClock
+                    android:id="@+id/clock_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="sans-serif-light"
+                    android:format12Hour="h:mm"
+                    android:format24Hour="HH:mm"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="-0.02"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="52dp"
+                    android:shadowColor="#40000000" android:shadowDy="1" android:shadowRadius="4" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

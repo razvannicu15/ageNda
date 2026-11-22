@@ -178,7 +178,7 @@ object Agenda {
                 e.endDate.isAfter(e.startDate) -> parts += "${t(e.begin)} → ${dayFmt.format(e.endDate)}, ${t(e.end)}"
                 else -> parts += "${t(e.begin)} – ${t(e.end)}"
             }
-            if (showLoc && e.location.isNotEmpty()) parts += e.location
+            if (showLoc && !e.allDay && e.location.isNotEmpty()) parts += e.location
             if (countdown && diff >= 2) parts += lc.resources.getQuantityString(R.plurals.in_days, diff, diff)
             out += Row(e, label, parts.joinToString(" · "), ongoing, diff == 0)
         }

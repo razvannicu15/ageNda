@@ -51,22 +51,24 @@ open class AgendaWidget : AppWidgetProvider() {
         private fun ids(c: Context, cls: Class<*>) =
             AppWidgetManager.getInstance(c).getAppWidgetIds(ComponentName(c, cls))
 
-        fun count(c: Context) = ids(c, AgendaWidget::class.java).size + ids(c, ClockWidget::class.java).size
-        fun clockCount(c: Context) = ids(c, ClockWidget::class.java).size
+        fun count(c: Context) = countOf(c, AgendaWidget::class.java) + countOf(c, ClockWidget::class.java) + countOf(c, WeatherWidget::class.java)
+        fun countOf(c: Context, cls: Class<*>) = ids(c, cls).size
 
         fun updateAll(c: Context) {
             val mgr = AppWidgetManager.getInstance(c)
             val agendaIds = ids(c, AgendaWidget::class.java)
             val clockIds = ids(c, ClockWidget::class.java)
-            if (agendaIds.isEmpty() && clockIds.isEmpty()) return
+            val weatherIds = ids(c, WeatherWidget::class.java)
+            if (agendaIds.isEmpty() && clockIds.isEmpty() && weatherIds.isEmpty()) return
             val items = Agenda.items(c)
-            agendaIds.forEach { safe { render(c, mgr, it, items, clock = false) } }
-            clockIds.forEach { safe { render(c, mgr, it, items, clock = true) } }
+            agendaIds.forEach { safe { render(c, mgr, it, R.layout.widget_agenda, agenda = true, clock = false) } }
+            clockIds.forEach { safe { render(c, mgr, it, R.layout.widget_clock, agenda = true, clock = true) } }
+            weatherIds.forEach { safe { render(c, mgr, it, R.layout.widget_clockonly, agenda = false, clock = true) } }
             safe {
                 @Suppress("DEPRECATION")
                 mgr.notifyAppWidgetViewDataChanged(agendaIds + clockIds, R.id.list)
                 schedule(c, items)
-                if (clockIds.isNotEmpty()) {
+                if (clockIds.isNotEmpty() || weatherIds.isNotEmpty()) {
                     WeatherJob.ensure(c)
                     Weather.refreshIfStale(c)
                 }
@@ -83,9 +85,9 @@ open class AgendaWidget : AppWidgetProvider() {
             PendingIntent.FLAG_IMMUTABLE,
         )
 
-        private fun render(c: Context, mgr: AppWidgetManager, id: Int, items: List<CalItem>, clock: Boolean) {
-            val rv = RemoteViews(c.packageName, if (clock) R.layout.widget_clock else R.layout.widget_agenda)
-            renderAgenda(c, rv, id)
+        private fun render(c: Context, mgr: AppWidgetManager, id: Int, layout: Int, agenda: Boolean, clock: Boolean) {
+            val rv = RemoteViews(c.packageName, layout)
+            if (agenda) renderAgenda(c, rv, id)
             if (clock) renderClock(c, rv)
             mgr.updateAppWidget(id, rv)
         }
@@ -101,7 +103,7 @@ open class AgendaWidget : AppWidgetProvider() {
             rv.setInt(R.id.header_line, "setColorFilter", p.lineRgb)
             rv.setInt(R.id.header_line, "setImageAlpha", p.lineAlpha)
             for (ic in intArrayOf(R.id.ic_cal, R.id.btn_add, R.id.btn_refresh)) rv.setInt(ic, "setColorFilter", p.text)
-            rv.setTextViewText(R.id.weekday, DateTimeFormatter.ofPattern("EEEE, d MMMM", loc).format(today).cap(loc))
+            rv.setTextViewText(R.id.weekday, DateTimeFormatter.ofPattern("EEEE, d MMM", loc).format(today).cap(loc))
             rv.setTextColor(R.id.weekday, p.text)
 
             val svc = Intent(c, AgendaService::class.java).apply {
@@ -216,3 +218,6 @@ open class AgendaWidget : AppWidgetProvider() {
 
 /** Widget 2: clock + weather + agenda. Same behaviour, different layout. */
 class ClockWidget : AgendaWidget()
+
+/** Widget 3: clock + weather only. */
+class WeatherWidget : AgendaWidget()

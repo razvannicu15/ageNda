@@ -121,12 +121,15 @@ class MainActivity : AppCompatActivity() {
         val ctx = this
 
         section(R.string.sec_widgets) {
-            row(getString(R.string.add_agenda), icon = R.drawable.si_list, chip = INDIGO,
-                value = countLabel(AgendaWidget.count(ctx) - AgendaWidget.clockCount(ctx)),
-                chevron = true) { pin(AgendaWidget::class.java) }
-            row(getString(R.string.add_clock), icon = R.drawable.si_clock, chip = INDIGO,
-                value = countLabel(AgendaWidget.clockCount(ctx)),
-                chevron = true) { pin(ClockWidget::class.java) }
+            listOf(
+                Triple(AgendaWidget::class.java, R.string.add_agenda, R.drawable.si_list),
+                Triple(WeatherWidget::class.java, R.string.add_weather, R.drawable.si_cloud),
+                Triple(ClockWidget::class.java, R.string.add_clock, R.drawable.si_widgets),
+            ).forEach { (cls, title, ic) ->
+                val n = AgendaWidget.countOf(ctx, cls)
+                row(getString(title), icon = ic, chip = INDIGO, subtitle = getString(R.string.add_hint),
+                    value = countLabel(n), valueColor = attr(M.attr.colorPrimary), chevron = true) { pin(cls) }
+            }
         }
 
         section(R.string.sec_look) { add(themeTiles()) }
@@ -141,9 +144,10 @@ class MainActivity : AppCompatActivity() {
                 val cals = Agenda.calendars(ctx)
                 val hidden = Prefs.hidden(ctx)
                 val n = Agenda.items(ctx).size
+                val on = cals.count { it.id !in hidden }
                 row(getString(R.string.sec_calendars), icon = R.drawable.si_calendar, chip = RED,
-                    subtitle = "${getString(R.string.st_events)}: $n",
-                    value = getString(R.string.calendars_count, cals.count { it.id !in hidden }, cals.size),
+                    subtitle = getString(R.string.events_found, n),
+                    value = if (on == cals.size) getString(R.string.calendars_all) else "$on/${cals.size}",
                     chevron = true) { pickCalendars(cals) }
             }
             choiceRow(getString(R.string.days), R.drawable.si_hourglass, ORANGE, Prefs.days(ctx).toString(),
@@ -377,27 +381,28 @@ class MainActivity : AppCompatActivity() {
     private fun renderPreview() {
         if (!::previewHost.isInitialized) return
         previewHost.removeAllViews()
-        val clock = Prefs.previewKind(this) == "clock"
+        val kind = Prefs.previewKind(this).let { if (it in listOf("agenda", "weather", "clock")) it else "clock" }
         val p = Palettes.of(this)
 
         val wrap = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        wrap.addView(previewSwitch(clock))
+        wrap.addView(previewSwitch(kind))
 
-        val v = layoutInflater.inflate(if (clock) R.layout.widget_clock else R.layout.widget_agenda, wrap, false)
+        val layout = when (kind) { "agenda" -> R.layout.widget_agenda; "weather" -> R.layout.widget_clockonly; else -> R.layout.widget_clock }
+        val v = layoutInflater.inflate(layout, wrap, false)
         v.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            .apply { topMargin = dp(14) }
-        if (clock) {
+            .apply { topMargin = dp(18); bottomMargin = dp(4) }
+        if (kind == "clock") {
             v.findViewById<View>(R.id.panel).layoutParams =
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    .apply { topMargin = dp(18) }
-            fillWeather(v)
+                    .apply { topMargin = dp(24) }
         }
-        fillAgenda(v, p)
+        if (kind != "agenda") fillWeather(v)
+        if (kind != "weather") fillAgenda(v, p)
         wrap.addView(v)
         previewHost.addView(wrap)
     }
 
-    private fun previewSwitch(clock: Boolean): View {
+    private fun previewSwitch(kind: String): View {
         val pill = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             background = GradientDrawable().apply { cornerRadius = dp(18).toFloat(); setColor(0x33FFFFFF) }
@@ -405,8 +410,8 @@ class MainActivity : AppCompatActivity() {
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 .apply { gravity = Gravity.CENTER_HORIZONTAL }
         }
-        listOf("agenda" to R.string.preview_agenda, "clock" to R.string.preview_clock).forEach { (k, res) ->
-            val on = (k == "clock") == clock
+        listOf("agenda" to R.string.preview_agenda, "weather" to R.string.preview_weather, "clock" to R.string.preview_all).forEach { (k, res) ->
+            val on = k == kind
             pill.addView(TextView(this).apply {
                 text = getString(res)
                 textSize = 13f
@@ -446,7 +451,7 @@ class MainActivity : AppCompatActivity() {
         }
         val loc = Loc.locale(this)
         v.findViewById<TextView>(R.id.weekday).apply {
-            text = DateTimeFormatter.ofPattern("EEEE, d MMMM", loc).format(LocalDate.now()).cap(loc)
+            text = DateTimeFormatter.ofPattern("EEEE, d MMM", loc).format(LocalDate.now()).cap(loc)
             setTextColor(p.text)
         }
 
@@ -509,19 +514,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             val tile = FrameLayout(this).apply {
-                background = wallpaper(dp(16).toFloat()).apply {
-                    if (selected) setStroke(dp(2), attr(M.attr.colorPrimary))
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(19).toFloat()
+                    setStroke(dp(2), if (selected) attr(M.attr.colorPrimary) else 0x00000000)
                 }
-                setPadding(dp(7), dp(7), dp(7), dp(7))
-                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(84))
+                setPadding(dp(4), dp(4), dp(4), dp(4))
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(88))
+            }
+            val inner = FrameLayout(this).apply {
+                background = if (st == "glass") wallpaper(dp(15).toFloat())
+                else GradientDrawable().apply { cornerRadius = dp(15).toFloat(); setColor(0) }
+                clipToOutline = true
             }
             val mini = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 background = GradientDrawable().apply {
-                    cornerRadius = dp(10).toFloat()
+                    cornerRadius = dp(15).toFloat()
                     setColor((p.bg and 0x00FFFFFF) or (p.bgAlpha shl 24))
+                    if (st == "paper") setStroke(1, attr(M.attr.colorOutlineVariant))
                 }
-                setPadding(dp(8), dp(8), dp(8), dp(6))
+                setPadding(dp(9), dp(10), dp(9), dp(6))
             }
             fun bar(w: Int, color: Int, h: Int = 4) = View(this).apply {
                 background = GradientDrawable().apply { cornerRadius = dp(2).toFloat(); setColor(color) }
@@ -546,11 +558,12 @@ class MainActivity : AppCompatActivity() {
                 })
                 mini.addView(line)
             }
-            tile.addView(mini, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            inner.addView(mini, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            tile.addView(inner, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             col.addView(tile)
             col.addView(text(getString(names.getValue(st)), M.attr.textAppearanceLabelMedium,
                 if (selected) attr(M.attr.colorPrimary) else attr(M.attr.colorOnSurfaceVariant)).apply {
-                setPadding(0, dp(8), 0, 0); maxLines = 1
+                setPadding(0, dp(6), 0, 0); maxLines = 1
             })
             row.addView(col)
         }

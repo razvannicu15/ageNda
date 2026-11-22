@@ -41,9 +41,9 @@
     <string name="opacity">Opacitate fundal</string>
 
     <string name="sec_content">Conținut</string>
-    <string name="days">Zile afișate</string>
-    <string name="show_location">Arată locația</string>
-    <string name="show_countdown">Arată „în N zile”</string>
+    <string name="days">Zile în avans</string>
+    <string name="show_location">Locația evenimentului</string>
+    <string name="show_countdown">Zile până la eveniment</string>
 
     <string name="sec_calendars">Calendare</string>
     <string name="calendars_need_perm">Permite accesul ca să alegi calendarele</string>
@@ -63,12 +63,12 @@
     <string name="st_never">—</string>
     <string name="st_refresh">Actualizează acum</string>
     <string name="refreshed">Widget actualizat</string>
-    <string name="app_language">Limba aplicației</string>
+    <string name="app_language">Limbă</string>
     <string name="cancel">Anulează</string>
     <string name="style_glass">Sticlă</string>
     <string name="style_graphite">Grafit</string>
     <string name="style_paper">Hârtie</string>
-    <string name="style_you">Material You</string>
+    <string name="style_you">Dinamic</string>
     <string name="wx_clear">Senin</string>
     <string name="wx_mostly_clear">Predominant senin</string>
     <string name="wx_partly">Parțial noros</string>
@@ -82,13 +82,13 @@
     <string name="wx_storm">Furtună</string>
     <string name="wx_set_place">Setează locația</string>
     <string name="wx_loading">Se actualizează…</string>
-    <string name="widget_agenda_name">ageNda</string>
-    <string name="widget_clock_name">ageNda · ceas și vreme</string>
+    <string name="widget_agenda_name">Agendă</string>
+    <string name="widget_clock_name">Agendă, ceas și vreme</string>
     <string name="widget_clock_desc">Ceas, vreme și agenda ta</string>
     <string name="weather_query">vremea %s</string>
     <string name="sec_widgets">Widgeturi</string>
-    <string name="add_agenda">Adaugă „ageNda”</string>
-    <string name="add_clock">Adaugă „ceas și vreme”</string>
+    <string name="add_agenda">Agendă</string>
+    <string name="add_clock">Agendă, ceas și vreme</string>
     <string name="sec_agenda">Agendă</string>
     <string name="sec_weather">Ceas și vreme</string>
     <string name="sec_general">General</string>
@@ -100,7 +100,7 @@
     <string name="weather_app_auto">Automat</string>
     <string name="weather_app_auto_found">Automat · %s</string>
     <string name="clock_tap">Atingere pe ceas</string>
-    <string name="clock_tap_value">Deschide alarmele</string>
+    <string name="clock_tap_value">Alarme</string>
     <string name="use_my_location">Folosește locația mea</string>
     <string name="search_city">Caută orașul</string>
     <string name="no_results">Niciun rezultat</string>
@@ -110,4 +110,12 @@
     <string name="about">Despre</string>
     <string name="about_text">Făcută de norAz, pentru că aplicațiile nu ar trebui să fie pline de reclame. Date meteo: Open-Meteo.</string>
     <string name="location_failed">Nu am putut afla locația</string>
+    <string name="widget_weather_name">Ceas și vreme</string>
+    <string name="widget_weather_desc">Ceas mare cu vremea de azi</string>
+    <string name="add_weather">Ceas și vreme</string>
+    <string name="add_hint">Adaugă pe ecran</string>
+    <string name="calendars_all">Toate</string>
+    <string name="events_found">%d evenimente</string>
+    <string name="preview_weather">Ceas</string>
+    <string name="preview_all">Complet</string>
 </resources>

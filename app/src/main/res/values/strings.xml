@@ -40,9 +40,9 @@
     <string name="opacity">Background opacity</string>
 
     <string name="sec_content">Content</string>
-    <string name="days">Days shown</string>
-    <string name="show_location">Show location</string>
-    <string name="show_countdown">Show “in N days”</string>
+    <string name="days">Days ahead</string>
+    <string name="show_location">Event location</string>
+    <string name="show_countdown">Days until event</string>
 
     <string name="sec_calendars">Calendars</string>
     <string name="calendars_need_perm">Allow access to choose calendars</string>
@@ -64,12 +64,12 @@
     <string name="st_never">—</string>
     <string name="st_refresh">Refresh now</string>
     <string name="refreshed">Widget refreshed</string>
-    <string name="app_language">App language</string>
+    <string name="app_language">Language</string>
     <string name="cancel">Cancel</string>
     <string name="style_glass">Glass</string>
     <string name="style_graphite">Graphite</string>
     <string name="style_paper">Paper</string>
-    <string name="style_you">Material You</string>
+    <string name="style_you">Dynamic</string>
     <string name="wx_clear">Clear</string>
     <string name="wx_mostly_clear">Mostly clear</string>
     <string name="wx_partly">Partly cloudy</string>
@@ -83,13 +83,13 @@
     <string name="wx_storm">Thunderstorm</string>
     <string name="wx_set_place">Set location</string>
     <string name="wx_loading">Updating…</string>
-    <string name="widget_agenda_name">ageNda</string>
-    <string name="widget_clock_name">ageNda · clock and weather</string>
+    <string name="widget_agenda_name">Agenda</string>
+    <string name="widget_clock_name">Agenda, clock and weather</string>
     <string name="widget_clock_desc">Clock, weather and your agenda</string>
     <string name="weather_query">weather %s</string>
     <string name="sec_widgets">Widgets</string>
-    <string name="add_agenda">Add “ageNda”</string>
-    <string name="add_clock">Add “clock and weather”</string>
+    <string name="add_agenda">Agenda</string>
+    <string name="add_clock">Agenda, clock and weather</string>
     <string name="sec_agenda">Agenda</string>
     <string name="sec_weather">Clock and weather</string>
     <string name="sec_general">General</string>
@@ -100,8 +100,8 @@
     <string name="weather_app">Weather app</string>
     <string name="weather_app_auto">Automatic</string>
     <string name="weather_app_auto_found">Automatic · %s</string>
-    <string name="clock_tap">Tap the clock</string>
-    <string name="clock_tap_value">Opens alarms</string>
+    <string name="clock_tap">Clock tap</string>
+    <string name="clock_tap_value">Alarms</string>
     <string name="use_my_location">Use my location</string>
     <string name="search_city">Search city</string>
     <string name="no_results">No results</string>
@@ -111,4 +111,12 @@
     <string name="about">About</string>
     <string name="about_text">Made by norAz because apps shouldn’t be full of ads. Weather data: Open-Meteo.</string>
     <string name="location_failed">Couldn’t get your location</string>
+    <string name="widget_weather_name">Clock and weather</string>
+    <string name="widget_weather_desc">Big clock with today’s weather</string>
+    <string name="add_weather">Clock and weather</string>
+    <string name="add_hint">Add to home screen</string>
+    <string name="calendars_all">All</string>
+    <string name="events_found">%d upcoming</string>
+    <string name="preview_weather">Clock</string>
+    <string name="preview_all">Complete</string>
 </resources>
