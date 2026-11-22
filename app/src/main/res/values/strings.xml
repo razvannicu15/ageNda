@@ -52,7 +52,7 @@
     <string name="lang_ro" translatable="false">Română</string>
     <string name="lang_en" translatable="false">English</string>
 
-    <string name="footer">ageNda %s · by norAz · no ads</string>
+    <string name="footer">ageNda %s · by norAz</string>
     <string name="preview">Preview</string>
     <string name="sec_status">Status</string>
     <string name="st_access">Calendar access</string>

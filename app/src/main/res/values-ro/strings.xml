@@ -51,7 +51,7 @@
     <string name="sec_language">Limbă</string>
     <string name="lang_auto">Sistem</string>
 
-    <string name="footer">ageNda %s · by norAz · fără reclame</string>
+    <string name="footer">ageNda %s · by norAz</string>
     <string name="preview">Previzualizare</string>
     <string name="sec_status">Stare</string>
     <string name="st_access">Acces la calendar</string>

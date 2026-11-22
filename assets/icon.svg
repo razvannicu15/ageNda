@@ -4,7 +4,7 @@
     <clipPath id="sq"><rect x="0" y="0" width="108" height="108" rx="26"/></clipPath></defs>
   <g clip-path="url(#sq)">
   <rect width="108" height="108" fill="url(#g)"/>
-  <g transform="translate(54 54) scale(0.9) translate(-54 -54)"><path fill="#fff" fill-rule="evenodd" d="M39,36h30a9,9 0 0 1 9,9v24a9,9 0 0 1 -9,9h-30a9,9 0 0 1 -9,-9v-24a9,9 0 0 1 9,-9z M40,51h28a3,3 0 0 1 3,3v14a3,3 0 0 1 -3,3h-28a3,3 0 0 1 -3,-3v-14a3,3 0 0 1 3,-3z"/>
+  <g transform="translate(54 54) scale(0.7) translate(-54 -54)"><path fill="#fff" fill-rule="evenodd" d="M39,36h30a9,9 0 0 1 9,9v24a9,9 0 0 1 -9,9h-30a9,9 0 0 1 -9,-9v-24a9,9 0 0 1 9,-9z M40,51h28a3,3 0 0 1 3,3v14a3,3 0 0 1 -3,3h-28a3,3 0 0 1 -3,-3v-14a3,3 0 0 1 3,-3z"/>
   <path fill="#fff" d="M42.5,28a3,3 0 0 1 3,3v8a3,3 0 0 1 -6,0v-8a3,3 0 0 1 3,-3z M65.5,28a3,3 0 0 1 3,3v8a3,3 0 0 1 -6,0v-8a3,3 0 0 1 3,-3z"/>
   <g fill="#fff" fill-opacity="0.55">
     <rect x="41" y="55" width="7" height="5.5" rx="1.6"/><rect x="50.5" y="55" width="7" height="5.5" rx="1.6"/>
