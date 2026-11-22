@@ -52,10 +52,14 @@ class AgendaWidget : AppWidgetProvider() {
             val ids = mgr.getAppWidgetIds(ComponentName(c, AgendaWidget::class.java))
             if (ids.isEmpty()) return
             val items = Agenda.items(c)
-            ids.forEach { render(c, mgr, it, items) }
-            @Suppress("DEPRECATION")
-            mgr.notifyAppWidgetViewDataChanged(ids, R.id.list)
-            schedule(c, items)
+            ids.forEach {
+                try { render(c, mgr, it, items) } catch (e: Exception) { android.util.Log.e("ageNda", "render", e) }
+            }
+            try {
+                @Suppress("DEPRECATION")
+                mgr.notifyAppWidgetViewDataChanged(ids, R.id.list)
+                schedule(c, items)
+            } catch (e: Exception) { android.util.Log.e("ageNda", "schedule", e) }
             Prefs.setLastRefresh(c, System.currentTimeMillis())
         }
 
@@ -99,7 +103,7 @@ class AgendaWidget : AppWidgetProvider() {
             rv.setPendingIntentTemplate(
                 R.id.list,
                 PendingIntent.getActivity(
-                    c, 10, Intent(Intent.ACTION_VIEW).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                    c, 10, Intent(c, OpenEventActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
                 ),
             )
