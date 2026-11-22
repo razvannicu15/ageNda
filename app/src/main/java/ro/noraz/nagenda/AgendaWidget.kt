@@ -100,12 +100,6 @@ open class AgendaWidget : AppWidgetProvider() {
 
             rv.setInt(R.id.bg, "setColorFilter", p.bg)
             rv.setInt(R.id.bg, "setImageAlpha", p.bgAlpha)
-            rv.setInt(R.id.header_line, "setColorFilter", p.lineRgb)
-            rv.setInt(R.id.header_line, "setImageAlpha", p.lineAlpha)
-            for (ic in intArrayOf(R.id.ic_cal, R.id.btn_add, R.id.btn_refresh)) rv.setInt(ic, "setColorFilter", p.text)
-            rv.setTextViewText(R.id.weekday, DateTimeFormatter.ofPattern("EEEE, d MMM", loc).format(today).cap(loc))
-            rv.setTextColor(R.id.weekday, p.text)
-
             val svc = Intent(c, AgendaService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
@@ -130,16 +124,6 @@ open class AgendaWidget : AppWidgetProvider() {
                 rv.setOnClickPendingIntent(R.id.empty, openApp(c))
             }
 
-            rv.setOnClickPendingIntent(R.id.header, openCalendar(c))
-            rv.setOnClickPendingIntent(
-                R.id.btn_add,
-                PendingIntent.getActivity(
-                    c, 2,
-                    Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                    PendingIntent.FLAG_IMMUTABLE,
-                ),
-            )
-            rv.setOnClickPendingIntent(R.id.btn_refresh, refreshIntent(c))
         }
 
         private fun renderClock(c: Context, rv: RemoteViews) {
@@ -148,25 +132,23 @@ open class AgendaWidget : AppWidgetProvider() {
             val unit = "°"
             if (!Weather.hasPlace(c)) {
                 rv.setTextViewText(R.id.wx_temp, "—")
-                rv.setTextViewText(R.id.wx_place, lc.getString(R.string.wx_set_place))
-                rv.setTextViewText(R.id.wx_cond, "")
+                rv.setTextViewText(R.id.wx_cond, lc.getString(R.string.wx_set_place))
                 rv.setTextViewText(R.id.wx_hilo, "")
-                rv.setViewVisibility(R.id.wx_icon, View.INVISIBLE)
+                rv.setViewVisibility(R.id.wx_icon, View.GONE)
                 rv.setOnClickPendingIntent(R.id.wx_block, openApp(c))
                 rv.setOnClickPendingIntent(R.id.wx_icon, openApp(c))
             } else {
-                rv.setTextViewText(R.id.wx_place, Prefs.placeName(c))
                 if (w == null) {
                     rv.setTextViewText(R.id.wx_temp, "—")
                     rv.setTextViewText(R.id.wx_cond, lc.getString(R.string.wx_loading))
-                    rv.setTextViewText(R.id.wx_hilo, "")
-                    rv.setViewVisibility(R.id.wx_icon, View.INVISIBLE)
+                    rv.setTextViewText(R.id.wx_hilo, Prefs.placeName(c))
+                    rv.setViewVisibility(R.id.wx_icon, View.GONE)
                 } else {
                     rv.setTextViewText(R.id.wx_temp, "${w.temp}$unit")
-                    rv.setTextViewText(R.id.wx_cond, lc.getString(Weather.text(w.code)))
-                    rv.setTextViewText(R.id.wx_hilo, "↑${w.max}$unit / ↓${w.min}$unit")
+                    rv.setTextViewText(R.id.wx_cond, lc.getString(Weather.text(w.sym)))
+                    rv.setTextViewText(R.id.wx_hilo, "↑${w.max}$unit ↓${w.min}$unit · ${Prefs.placeName(c)}")
                     rv.setViewVisibility(R.id.wx_icon, View.VISIBLE)
-                    rv.setImageViewResource(R.id.wx_icon, Weather.icon(w.code, w.isDay))
+                    rv.setImageViewResource(R.id.wx_icon, Weather.icon(w.sym))
                 }
                 val wx = openWeather(c)
                 rv.setOnClickPendingIntent(R.id.wx_block, wx)

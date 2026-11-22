@@ -109,7 +109,7 @@
     <string name="preview_agenda">Agenda</string>
     <string name="preview_clock">Clock and weather</string>
     <string name="about">About</string>
-    <string name="about_text">Made by norAz because apps shouldn’t be full of ads. Weather data: Open-Meteo.</string>
+    <string name="about_text">Made by norAz because apps shouldn’t be full of ads. Weather: yr.no (MET Norway).</string>
     <string name="location_failed">Couldn’t get your location</string>
     <string name="widget_weather_name">Clock and weather</string>
     <string name="widget_weather_desc">Big clock with today’s weather</string>
@@ -119,4 +119,7 @@
     <string name="events_found">%d upcoming</string>
     <string name="preview_weather">Clock</string>
     <string name="preview_all">Complete</string>
+    <string name="wx_light_rain">Light rain</string>
+    <string name="wx_heavy_rain">Heavy rain</string>
+    <string name="wx_sleet">Sleet</string>
 </resources>

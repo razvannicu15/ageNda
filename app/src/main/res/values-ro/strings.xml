@@ -108,7 +108,7 @@
     <string name="preview_agenda">Agendă</string>
     <string name="preview_clock">Ceas și vreme</string>
     <string name="about">Despre</string>
-    <string name="about_text">Făcută de norAz, pentru că aplicațiile nu ar trebui să fie pline de reclame. Date meteo: Open-Meteo.</string>
+    <string name="about_text">Făcută de norAz, pentru că aplicațiile nu ar trebui să fie pline de reclame. Vremea: yr.no (MET Norway).</string>
     <string name="location_failed">Nu am putut afla locația</string>
     <string name="widget_weather_name">Ceas și vreme</string>
     <string name="widget_weather_desc">Ceas mare cu vremea de azi</string>
@@ -118,4 +118,7 @@
     <string name="events_found">%d evenimente</string>
     <string name="preview_weather">Ceas</string>
     <string name="preview_all">Complet</string>
+    <string name="wx_light_rain">Ploaie slabă</string>
+    <string name="wx_heavy_rain">Ploaie torențială</string>
+    <string name="wx_sleet">Lapoviță</string>
 </resources>

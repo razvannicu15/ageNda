@@ -427,39 +427,30 @@ class MainActivity : AppCompatActivity() {
     private fun fillWeather(v: View) {
         val w = Weather.cached(this)
         val has = Weather.hasPlace(this)
-        v.findViewById<TextView>(R.id.wx_place).text = if (has) Prefs.placeName(this) else getString(R.string.wx_set_place)
         val icon = v.findViewById<ImageView>(R.id.wx_icon)
-        if (has && w != null) {
-            v.findViewById<TextView>(R.id.wx_temp).text = "${w.temp}°"
-            v.findViewById<TextView>(R.id.wx_cond).text = Loc.ctx(this).getString(Weather.text(w.code))
-            v.findViewById<TextView>(R.id.wx_hilo).text = "↑${w.max}° / ↓${w.min}°"
-            icon.setImageResource(Weather.icon(w.code, w.isDay)); icon.visibility = View.VISIBLE
-        } else {
-            v.findViewById<TextView>(R.id.wx_temp).text = "—"
-            v.findViewById<TextView>(R.id.wx_cond).text = if (has) getString(R.string.wx_loading) else ""
-            v.findViewById<TextView>(R.id.wx_hilo).text = ""
-            icon.visibility = View.INVISIBLE
+        val temp = v.findViewById<TextView>(R.id.wx_temp)
+        val cond = v.findViewById<TextView>(R.id.wx_cond)
+        val hilo = v.findViewById<TextView>(R.id.wx_hilo)
+        when {
+            !has -> { temp.text = "—"; cond.text = getString(R.string.wx_set_place); hilo.text = ""; icon.visibility = View.GONE }
+            w == null -> { temp.text = "—"; cond.text = getString(R.string.wx_loading); hilo.text = Prefs.placeName(this); icon.visibility = View.GONE }
+            else -> {
+                temp.text = "${w.temp}°"
+                cond.text = Loc.ctx(this).getString(Weather.text(w.sym))
+                hilo.text = "↑${w.max}° ↓${w.min}° · ${Prefs.placeName(this)}"
+                icon.setImageResource(Weather.icon(w.sym)); icon.visibility = View.VISIBLE
+            }
         }
         v.findViewById<View>(R.id.wx_block).setOnClickListener { if (!has) pickLocation() }
     }
 
     private fun fillAgenda(v: View, p: Palette) {
         v.findViewById<ImageView>(R.id.bg).apply { imageTintList = null; setColorFilter(p.bg); imageAlpha = p.bgAlpha }
-        v.findViewById<ImageView>(R.id.header_line).apply { imageTintList = null; setColorFilter(p.lineRgb); imageAlpha = p.lineAlpha }
-        for (id in intArrayOf(R.id.ic_cal, R.id.btn_add, R.id.btn_refresh)) {
-            v.findViewById<ImageView>(id).apply { imageTintList = null; setColorFilter(p.text) }
-        }
-        val loc = Loc.locale(this)
-        v.findViewById<TextView>(R.id.weekday).apply {
-            text = DateTimeFormatter.ofPattern("EEEE, d MMM", loc).format(LocalDate.now()).cap(loc)
-            setTextColor(p.text)
-        }
-
         val frame = v.findViewById<View>(R.id.list).parent as FrameLayout
-        frame.removeAllViews()
-        frame.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(10)) }
-        frame.addView(box)
+        frame.removeView(v.findViewById(R.id.list))
+        frame.removeView(v.findViewById(R.id.empty))
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, dp(6), 0, dp(6)) }
+        frame.addView(box, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
         val rows = Agenda.rows(this).take(4)
         if (rows.isEmpty()) {
