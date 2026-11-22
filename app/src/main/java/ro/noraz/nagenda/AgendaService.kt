@@ -15,7 +15,6 @@ class AgendaService : RemoteViewsService() {
     private class Factory(private val c: Context) : RemoteViewsFactory {
         private var rows: List<Row> = emptyList()
         private var pal: Palette = Palettes.of(c)
-        private var alpha = 255
 
         override fun onCreate() {}
 
@@ -24,7 +23,6 @@ class AgendaService : RemoteViewsService() {
             try {
                 rows = Agenda.rows(c)
                 pal = Palettes.of(c)
-                alpha = cardAlpha(c)
             } finally {
                 Binder.restoreCallingIdentity(token)
             }
@@ -41,12 +39,12 @@ class AgendaService : RemoteViewsService() {
             val rv = RemoteViews(c.packageName, R.layout.widget_row_event)
             val r = rows.getOrNull(position) ?: return rv
             val e = r.item
-            rv.setImageViewResource(
-                R.id.row_bg,
-                if (position == rows.lastIndex) R.drawable.card_last else R.drawable.card_mid,
-            )
-            rv.setInt(R.id.row_bg, "setColorFilter", pal.card)
-            rv.setInt(R.id.row_bg, "setImageAlpha", alpha)
+            if (position == rows.lastIndex) rv.setViewVisibility(R.id.line, View.INVISIBLE)
+            else {
+                rv.setViewVisibility(R.id.line, View.VISIBLE)
+                rv.setInt(R.id.line, "setColorFilter", pal.lineRgb)
+                rv.setInt(R.id.line, "setImageAlpha", pal.lineAlpha)
+            }
 
             rv.setTextViewText(R.id.date, r.date)
             rv.setTextColor(R.id.date, if (r.today) pal.accent else pal.muted)
@@ -71,8 +69,3 @@ class AgendaService : RemoteViewsService() {
     }
 }
 
-/** Cards stay a bit more solid than the frame so text is always readable. */
-fun cardAlpha(c: Context): Int {
-    val o = Prefs.opacity(c)
-    return ((o + (100 - o) * 0.35f) * 255 / 100).toInt().coerceIn(0, 255)
-}

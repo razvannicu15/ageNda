@@ -65,4 +65,8 @@
     <string name="refreshed">Widget actualizat</string>
     <string name="app_language">Limba aplicației</string>
     <string name="cancel">Anulează</string>
+    <string name="style_glass">Sticlă</string>
+    <string name="style_graphite">Grafit</string>
+    <string name="style_paper">Hârtie</string>
+    <string name="style_you">Material You</string>
 </resources>

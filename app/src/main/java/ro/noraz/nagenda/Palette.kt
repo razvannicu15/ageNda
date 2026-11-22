@@ -6,49 +6,57 @@ import android.os.Build
 
 data class Palette(
     val bg: Int,
-    val card: Int,
+    val bgAlpha: Int,   // 0..255
     val text: Int,
     val muted: Int,
-    val accent: Int,
-)
+    val accent: Int,    // "today"
+    val line: Int,      // separators (ARGB)
+) {
+    val lineRgb get() = line or 0xFF000000.toInt()
+    val lineAlpha get() = line ushr 24
+}
 
+/** Four simple widget styles. */
 object Palettes {
-    fun isDark(c: Context): Boolean = when (Prefs.theme(c)) {
-        "dark" -> true
-        "light" -> false
-        else -> (c.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-            Configuration.UI_MODE_NIGHT_YES
-    }
+    val STYLES = listOf("glass", "graphite", "paper", "you")
 
-    fun of(c: Context): Palette {
-        val dark = isDark(c)
-        if (Build.VERSION.SDK_INT >= 31 && Prefs.colors(c) == "dynamic") {
-            return if (dark) Palette(
-                bg = c.getColor(android.R.color.system_neutral1_1000),
-                card = c.getColor(android.R.color.system_neutral1_900),
+    fun systemDark(c: Context) =
+        (c.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+    fun of(c: Context, style: String = Prefs.style(c)): Palette = when (style) {
+        // Sticlă — wallpaper shows through, like Samsung/iOS clear widgets
+        "glass" -> Palette(
+            bg = 0xFF000000.toInt(), bgAlpha = 92,
+            text = 0xFFFFFFFF.toInt(), muted = 0xB3FFFFFF.toInt(),
+            accent = 0xFFFFD166.toInt(), line = 0x1FFFFFFF,
+        )
+        // Hârtie — iOS light
+        "paper" -> Palette(
+            bg = 0xFFFFFFFF.toInt(), bgAlpha = 255,
+            text = 0xFF1C1C1E.toInt(), muted = 0xFF8E8E93.toInt(),
+            accent = 0xFFFF3B30.toInt(), line = 0x1A3C3C43,
+        )
+        // Material You — tones from the wallpaper, follows system light/dark
+        "you" -> if (Build.VERSION.SDK_INT >= 31) {
+            if (systemDark(c)) Palette(
+                bg = c.getColor(android.R.color.system_neutral1_900), bgAlpha = 255,
                 text = c.getColor(android.R.color.system_neutral1_50),
                 muted = c.getColor(android.R.color.system_neutral2_300),
                 accent = c.getColor(android.R.color.system_accent1_200),
+                line = (c.getColor(android.R.color.system_neutral2_500) and 0x00FFFFFF) or 0x33000000,
             ) else Palette(
-                bg = c.getColor(android.R.color.system_neutral2_100),
-                card = c.getColor(android.R.color.system_neutral1_10),
+                bg = c.getColor(android.R.color.system_accent2_50), bgAlpha = 255,
                 text = c.getColor(android.R.color.system_neutral1_900),
                 muted = c.getColor(android.R.color.system_neutral2_600),
                 accent = c.getColor(android.R.color.system_accent1_600),
+                line = (c.getColor(android.R.color.system_neutral2_400) and 0x00FFFFFF) or 0x33000000,
             )
-        }
-        return if (dark) Palette(
-            bg = 0xFF0E0E10.toInt(),
-            card = 0xFF232226.toInt(),
-            text = 0xFFF2F2F7.toInt(),
-            muted = 0xFF9A9AA6.toInt(),
-            accent = 0xFFB9A8FF.toInt(),
-        ) else Palette(
-            bg = 0xFFE4E3EA.toInt(),
-            card = 0xFFFFFFFF.toInt(),
-            text = 0xFF1C1B22.toInt(),
-            muted = 0xFF6E6C78.toInt(),
-            accent = 0xFF5B4BC4.toInt(),
+        } else of(c, if (systemDark(c)) "graphite" else "paper")
+        // Grafit — iOS dark
+        else -> Palette(
+            bg = 0xFF1C1C1E.toInt(), bgAlpha = 255,
+            text = 0xFFFFFFFF.toInt(), muted = 0xFF8E8E93.toInt(),
+            accent = 0xFFFF453A.toInt(), line = 0x2EFFFFFF,
         )
     }
 }

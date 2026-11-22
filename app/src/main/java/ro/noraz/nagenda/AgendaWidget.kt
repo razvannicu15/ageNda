@@ -79,18 +79,12 @@ class AgendaWidget : AppWidgetProvider() {
             val rv = RemoteViews(c.packageName, R.layout.widget_agenda)
 
             rv.setInt(R.id.bg, "setColorFilter", p.bg)
-            rv.setInt(R.id.bg, "setImageAlpha", Prefs.opacity(c) * 255 / 100)
-
-            val ca = cardAlpha(c)
-            for (id2 in intArrayOf(R.id.header_bg, R.id.empty_bg)) {
-                rv.setInt(id2, "setColorFilter", p.card)
-                rv.setInt(id2, "setImageAlpha", ca)
-            }
-            rv.setInt(R.id.ic_cal, "setColorFilter", p.text)
-            rv.setTextViewText(R.id.weekday, DateTimeFormatter.ofPattern("EEEE, d MMMM", loc).format(today))
+            rv.setInt(R.id.bg, "setImageAlpha", p.bgAlpha)
+            rv.setInt(R.id.header_line, "setColorFilter", p.lineRgb)
+            rv.setInt(R.id.header_line, "setImageAlpha", p.lineAlpha)
+            for (ic in intArrayOf(R.id.ic_cal, R.id.btn_add, R.id.btn_refresh)) rv.setInt(ic, "setColorFilter", p.text)
+            rv.setTextViewText(R.id.weekday, DateTimeFormatter.ofPattern("EEEE, d MMMM", loc).format(today).cap(loc))
             rv.setTextColor(R.id.weekday, p.text)
-            rv.setInt(R.id.btn_add, "setColorFilter", p.text)
-            rv.setInt(R.id.btn_refresh, "setColorFilter", p.text)
 
             // list
             val svc = Intent(c, AgendaService::class.java).apply {
@@ -108,12 +102,12 @@ class AgendaWidget : AppWidgetProvider() {
                 ),
             )
 
-            rv.setTextColor(R.id.empty_text, p.muted)
+            rv.setTextColor(R.id.empty, p.muted)
             if (Agenda.hasPerm(c)) {
-                rv.setTextViewText(R.id.empty_text, lc.getString(R.string.empty_days, Prefs.days(c)))
+                rv.setTextViewText(R.id.empty, lc.getString(R.string.empty_days, Prefs.days(c)))
                 rv.setOnClickPendingIntent(R.id.empty, openCalendar(c))
             } else {
-                rv.setTextViewText(R.id.empty_text, lc.getString(R.string.need_permission))
+                rv.setTextViewText(R.id.empty, lc.getString(R.string.need_permission))
                 rv.setOnClickPendingIntent(R.id.empty, openApp(c))
             }
 

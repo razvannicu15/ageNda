@@ -6,9 +6,8 @@ object Prefs {
     private fun sp(c: Context) = c.getSharedPreferences("nagenda", Context.MODE_PRIVATE)
 
     fun theme(c: Context) = sp(c).getString("theme", "auto") ?: "auto"
-    fun colors(c: Context) = sp(c).getString("colors", "dynamic") ?: "dynamic"
+    fun style(c: Context) = sp(c).getString("style", "glass") ?: "glass"
     fun lang(c: Context) = sp(c).getString("lang", "auto") ?: "auto"
-    fun opacity(c: Context) = sp(c).getInt("opacity", 90)
     fun days(c: Context) = sp(c).getInt("days", 14)
     fun showLocation(c: Context) = sp(c).getBoolean("location", true)
     fun showCountdown(c: Context) = sp(c).getBoolean("countdown", false)

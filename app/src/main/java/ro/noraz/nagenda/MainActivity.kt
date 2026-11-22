@@ -63,10 +63,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        previewHost.background = GradientDrawable().apply {
-            cornerRadius = dp(24).toFloat()
-            setColor(attr(M.attr.colorSurfaceContainerHighest))
-        }
+        previewHost.background = wallpaper(dp(28).toFloat())
 
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (_: Exception) { "" }
         findViewById<TextView>(R.id.footer).text = getString(R.string.footer, version)
@@ -115,15 +112,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Look
-        section(R.string.sec_look) {
-            choiceRow(R.string.theme, "theme", Prefs.theme(this@MainActivity),
-                listOf("auto" to R.string.theme_auto, "light" to R.string.theme_light, "dark" to R.string.theme_dark)) {
-                App.applyTheme(it)
-            }
-            choiceRow(R.string.colors, "colors", Prefs.colors(this@MainActivity),
-                listOf("dynamic" to R.string.colors_dynamic, "neutral" to R.string.colors_neutral))
-            sliderRow()
-        }
+        section(R.string.sec_look) { add(themeTiles()) }
 
         // Content
         section(R.string.sec_content) {
@@ -173,47 +162,38 @@ class MainActivity : AppCompatActivity() {
         if (!::previewHost.isInitialized) return
         previewHost.removeAllViews()
         val p = Palettes.of(this)
-        val ca = cardAlpha(this)
         val v = layoutInflater.inflate(R.layout.widget_agenda, previewHost, false)
         v.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        v.findViewById<ImageView>(R.id.bg).apply {
-            imageTintList = null; setColorFilter(p.bg); imageAlpha = Prefs.opacity(this@MainActivity) * 255 / 100
-        }
-        v.findViewById<ImageView>(R.id.header_bg).apply { imageTintList = null; setColorFilter(p.card); imageAlpha = ca }
+        v.findViewById<ImageView>(R.id.bg).apply { imageTintList = null; setColorFilter(p.bg); imageAlpha = p.bgAlpha }
+        v.findViewById<ImageView>(R.id.header_line).apply { imageTintList = null; setColorFilter(p.lineRgb); imageAlpha = p.lineAlpha }
         for (id in intArrayOf(R.id.ic_cal, R.id.btn_add, R.id.btn_refresh)) {
             v.findViewById<ImageView>(id).apply { imageTintList = null; setColorFilter(p.text) }
         }
+        val loc = Loc.locale(this)
         v.findViewById<TextView>(R.id.weekday).apply {
-            text = java.time.format.DateTimeFormatter.ofPattern("EEEE, d MMMM", Loc.locale(this@MainActivity))
-                .format(java.time.LocalDate.now())
+            text = java.time.format.DateTimeFormatter.ofPattern("EEEE, d MMMM", loc).format(java.time.LocalDate.now()).cap(loc)
             setTextColor(p.text)
         }
 
         val frame = v.findViewById<View>(R.id.list).parent as FrameLayout
         frame.removeAllViews()
         frame.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(10)) }
         frame.addView(box)
 
         val rows = Agenda.rows(this).take(4)
         if (rows.isEmpty()) {
-            val r = layoutInflater.inflate(R.layout.widget_row_event, box, false)
-            styleRow(r, p, ca, last = true)
-            r.findViewById<TextView>(R.id.date).visibility = View.GONE
-            r.findViewById<View>(R.id.dot).visibility = View.GONE
-            r.findViewById<View>(R.id.sub).visibility = View.GONE
-            r.findViewById<TextView>(R.id.title).apply {
+            box.addView(TextView(this).apply {
                 text = Loc.ctx(this@MainActivity).getString(
                     if (Agenda.hasPerm(this@MainActivity)) R.string.empty_days else R.string.need_permission,
                     Prefs.days(this@MainActivity))
-                setTextColor(p.muted); gravity = Gravity.CENTER
-            }
-            box.addView(r)
+                setTextColor(p.muted); gravity = Gravity.CENTER; textSize = 14f
+                setPadding(dp(16), dp(28), dp(16), dp(24))
+            })
         }
         rows.forEachIndexed { i, row ->
             val r = layoutInflater.inflate(R.layout.widget_row_event, box, false)
-            styleRow(r, p, ca, last = i == rows.lastIndex)
             r.findViewById<TextView>(R.id.date).apply { text = row.date; setTextColor(if (row.today) p.accent else p.muted) }
             r.findViewById<TextView>(R.id.title).apply { text = row.item.title; setTextColor(p.text) }
             r.findViewById<TextView>(R.id.sub).apply {
@@ -221,24 +201,102 @@ class MainActivity : AppCompatActivity() {
                 else { text = row.sub; setTextColor(if (row.ongoing) p.accent else p.muted) }
             }
             r.findViewById<ImageView>(R.id.dot).setColorFilter(row.item.color)
+            r.findViewById<ImageView>(R.id.line).apply {
+                imageTintList = null; setColorFilter(p.lineRgb); imageAlpha = p.lineAlpha
+                visibility = if (i == rows.lastIndex) View.INVISIBLE else View.VISIBLE
+            }
             box.addView(r)
         }
         previewHost.addView(v)
     }
 
-    private fun styleRow(r: View, p: Palette, ca: Int, last: Boolean) {
-        r.findViewById<ImageView>(R.id.row_bg).apply {
-            setImageResource(if (last) R.drawable.card_last else R.drawable.card_mid)
-            imageTintList = null; setColorFilter(p.card); imageAlpha = ca
+    /** Four tappable mini-widgets, one per style. */
+    private fun themeTiles(): View {
+        val names = mapOf("glass" to R.string.style_glass, "graphite" to R.string.style_graphite,
+            "paper" to R.string.style_paper, "you" to R.string.style_you)
+        val current = Prefs.style(this)
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(12), dp(14), dp(12), dp(12))
         }
+        Palettes.STYLES.forEach { st ->
+            val p = Palettes.of(this, st)
+            val selected = st == current
+            val col = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    marginStart = dp(4); marginEnd = dp(4)
+                }
+                setOnClickListener {
+                    if (st != Prefs.style(this@MainActivity)) {
+                        Prefs.put(this@MainActivity, "style", st)
+                        changed(); rebuild()
+                    }
+                }
+            }
+            val tile = FrameLayout(this).apply {
+                background = wallpaper(dp(16).toFloat()).apply {
+                    if (selected) setStroke(dp(2), attr(M.attr.colorPrimary))
+                }
+                setPadding(dp(7), dp(7), dp(7), dp(7))
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(84))
+            }
+            val mini = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(10).toFloat()
+                    setColor((p.bg and 0x00FFFFFF) or (p.bgAlpha shl 24))
+                }
+                setPadding(dp(8), dp(8), dp(8), dp(6))
+            }
+            fun bar(w: Int, color: Int, h: Int = 4, top: Int = 0) = View(this).apply {
+                background = GradientDrawable().apply { cornerRadius = dp(2).toFloat(); setColor(color) }
+                layoutParams = LinearLayout.LayoutParams(dp(w), dp(h)).apply { topMargin = dp(top) }
+            }
+            mini.addView(bar(30, p.text, 5))
+            listOf(0xFFC9A7F5.toInt(), 0xFF7BC96F.toInt(), 0xFFF26B5B.toInt()).forEachIndexed { i, dot ->
+                val line = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                        topMargin = dp(if (i == 0) 9 else 6)
+                    }
+                }
+                line.addView(bar(8, if (i == 0) p.accent else p.muted, 3))
+                line.addView(bar(if (i == 1) 18 else 24, p.text, 3).apply {
+                    (layoutParams as LinearLayout.LayoutParams).apply { marginStart = dp(5); weight = 0f }
+                })
+                line.addView(View(this).apply { layoutParams = LinearLayout.LayoutParams(0, 1, 1f) })
+                line.addView(View(this).apply {
+                    background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(dot) }
+                    layoutParams = LinearLayout.LayoutParams(dp(5), dp(5))
+                })
+                mini.addView(line)
+            }
+            tile.addView(mini, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            col.addView(tile)
+            col.addView(text(getString(names.getValue(st)), M.attr.textAppearanceLabelMedium,
+                if (selected) attr(M.attr.colorPrimary) else attr(M.attr.colorOnSurfaceVariant)).apply {
+                setPadding(0, dp(8), 0, 0)
+                maxLines = 1
+            })
+            row.addView(col)
+        }
+        return row
     }
+
+    /** A dark "home screen" behind previews, so Glass reads correctly. */
+    private fun wallpaper(radius: Float) = GradientDrawable(
+        GradientDrawable.Orientation.TL_BR, intArrayOf(0xFF55555B.toInt(), 0xFF1A1A1D.toInt(), 0xFF0B0B0C.toInt()),
+    ).apply { cornerRadius = radius }
 
     // ------------------------------------------------------------------ table UI
 
     private inner class Section(val box: LinearLayout) {
         private var count = 0
 
-        private fun add(v: View) {
+        fun add(v: View) {
             if (count++ > 0) box.addView(View(this@MainActivity).apply {
                 setBackgroundColor(attr(M.attr.colorOutlineVariant))
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1).apply {
@@ -329,35 +387,6 @@ class MainActivity : AppCompatActivity() {
             val r = row(title, subtitle = subtitle, dotColor = dotColor, trailing = sw) { sw.toggle() }
             r.setPadding(r.paddingLeft, dp(4), dp(8), dp(4))
             sw.setOnCheckedChangeListener { _, on -> onChange(on) }
-        }
-
-        fun sliderRow() {
-            val valueTv = text("${Prefs.opacity(this@MainActivity)}%", M.attr.textAppearanceBodyMedium,
-                attr(M.attr.colorOnSurfaceVariant))
-            val wrap = LinearLayout(this@MainActivity).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(dp(16), dp(12), dp(16), dp(4))
-            }
-            val head = LinearLayout(this@MainActivity).apply { orientation = LinearLayout.HORIZONTAL }
-            head.addView(text(getString(R.string.opacity), M.attr.textAppearanceBodyLarge, attr(M.attr.colorOnSurface)).apply {
-                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-            })
-            head.addView(valueTv)
-            wrap.addView(head)
-            wrap.addView(Slider(this@MainActivity).apply {
-                valueFrom = 30f; valueTo = 100f; stepSize = 5f
-                value = (Prefs.opacity(this@MainActivity).coerceIn(30, 100) / 5 * 5).toFloat()
-                labelBehavior = com.google.android.material.slider.LabelFormatter.LABEL_GONE
-                addOnChangeListener { _, v, _ -> valueTv.text = "${v.toInt()}%" }
-                addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                    override fun onStartTrackingTouch(slider: Slider) {}
-                    override fun onStopTrackingTouch(slider: Slider) {
-                        Prefs.put(this@MainActivity, "opacity", slider.value.toInt())
-                        changed()
-                    }
-                })
-            })
-            add(wrap)
         }
     }
 

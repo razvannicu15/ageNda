@@ -66,4 +66,8 @@
     <string name="refreshed">Widget refreshed</string>
     <string name="app_language">App language</string>
     <string name="cancel">Cancel</string>
+    <string name="style_glass">Glass</string>
+    <string name="style_graphite">Graphite</string>
+    <string name="style_paper">Paper</string>
+    <string name="style_you">Material You</string>
 </resources>
