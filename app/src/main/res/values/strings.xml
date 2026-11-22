@@ -41,8 +41,8 @@
 
     <string name="sec_content">Content</string>
     <string name="days">Days ahead</string>
-    <string name="show_location">Event location</string>
-    <string name="show_countdown">Days until event</string>
+    <string name="show_location">Location</string>
+    <string name="show_countdown">Days left</string>
 
     <string name="sec_calendars">Calendars</string>
     <string name="calendars_need_perm">Allow access to choose calendars</string>

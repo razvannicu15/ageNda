@@ -42,8 +42,8 @@
 
     <string name="sec_content">Conținut</string>
     <string name="days">Zile în avans</string>
-    <string name="show_location">Locația evenimentului</string>
-    <string name="show_countdown">Zile până la eveniment</string>
+    <string name="show_location">Locația</string>
+    <string name="show_countdown">Zile rămase</string>
 
     <string name="sec_calendars">Calendare</string>
     <string name="calendars_need_perm">Permite accesul ca să alegi calendarele</string>
@@ -96,7 +96,7 @@
     <string name="units">Unități</string>
     <string name="units_c">Celsius (°C)</string>
     <string name="units_f">Fahrenheit (°F)</string>
-    <string name="weather_app">Aplicație vreme</string>
+    <string name="weather_app">Aplicație</string>
     <string name="weather_app_auto">Automat</string>
     <string name="weather_app_auto_found">Automat · %s</string>
     <string name="clock_tap">Atingere pe ceas</string>

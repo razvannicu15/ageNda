@@ -544,6 +544,9 @@ class MainActivity : AppCompatActivity() {
             col.addView(text(getString(names.getValue(st)), M.attr.textAppearanceLabelMedium,
                 if (selected) attr(M.attr.colorPrimary) else attr(M.attr.colorOnSurfaceVariant)).apply {
                 setPadding(0, dp(6), 0, 0); maxLines = 1
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                setAutoSizeTextTypeUniformWithConfiguration(9, 14, 1, TypedValue.COMPLEX_UNIT_SP)
             })
             row.addView(col)
         }
@@ -600,21 +603,27 @@ class MainActivity : AppCompatActivity() {
 
     /** Title row + full-width segmented buttons, like NetScan's language/theme pickers. */
     private fun segmented(icon: Int?, title: String?, current: String, options: List<Pair<String, String>>, onPick: (String) -> Unit) {
-        if (icon != null && title != null) item(icon, title)
+        if (icon != null && title != null) item(icon, title).apply {
+            minimumHeight = dp(44); setPadding(paddingLeft, dp(6), paddingRight, dp(2))
+        }
         val group = MaterialButtonToggleGroup(this).apply {
             isSingleSelection = true
             isSelectionRequired = true
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                marginStart = dp(16); marginEnd = dp(16); bottomMargin = dp(8)
-                if (icon != null) marginStart = dp(60)
+                marginStart = dp(16); marginEnd = dp(16); bottomMargin = dp(10)
             }
         }
         val ids = options.map { (k, label) ->
             val b = MaterialButton(this, null, M.attr.materialButtonOutlinedStyle).apply {
                 id = View.generateViewId()
                 text = label
-                maxLines = 1
                 isAllCaps = false
+                maxLines = 1
+                minWidth = 0; minimumWidth = 0
+                icon = null; iconPadding = 0
+                setPaddingRelative(dp(4), paddingTop, dp(4), paddingBottom)
+                // never truncate: shrink the label instead when the system font is large
+                setAutoSizeTextTypeUniformWithConfiguration(10, 16, 1, TypedValue.COMPLEX_UNIT_SP)
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
             }
             group.addView(b)
