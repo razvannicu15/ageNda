@@ -104,7 +104,8 @@ object Weather {
     fun refreshIfStale(c: Context, force: Boolean = false) {
         if (!hasPlace(c) || busy) return
         val w = cached(c)
-        if (!force && w != null && System.currentTimeMillis() - w.at < STALE) return
+        val hasHours = c.getSharedPreferences("nagenda", Context.MODE_PRIVATE).contains("wx_hours")
+        if (!force && hasHours && w != null && System.currentTimeMillis() - w.at < STALE) return
         busy = true
         val app = c.applicationContext
         Thread {
